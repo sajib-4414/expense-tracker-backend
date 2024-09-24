@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-//@Entity
-//@Table(name="e_expense")
+@Entity
+@Table(name="e_expense")
 public class Expense {
 
     @Id
