@@ -1,4 +1,4 @@
-package com.sajib_4414.expense.tracker.config;
+package com.sajib_4414.expense.tracker.config.auth;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,4 +1,4 @@
-package com.sajib_4414.expense.tracker.category;
+package com.sajib_4414.expense.tracker.models.category;
 
 
 import jakarta.persistence.*;

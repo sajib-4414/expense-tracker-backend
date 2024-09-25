@@ -1,4 +1,4 @@
-package com.sajib_4414.expense.tracker.auth;
+package com.sajib_4414.expense.tracker.payload;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class LoginResponse {
     private String token;
 }

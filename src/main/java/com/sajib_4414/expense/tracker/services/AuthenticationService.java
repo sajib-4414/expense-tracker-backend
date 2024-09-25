@@ -1,7 +1,10 @@
-package com.sajib_4414.expense.tracker.auth;
+package com.sajib_4414.expense.tracker.services;
 
-import com.sajib_4414.expense.tracker.config.JWTService;
-import com.sajib_4414.expense.tracker.user.*;
+import com.sajib_4414.expense.tracker.payload.RegisterRequest;
+import com.sajib_4414.expense.tracker.config.auth.JWTService;
+import com.sajib_4414.expense.tracker.models.user.*;
+import com.sajib_4414.expense.tracker.payload.LoginRequest;
+import com.sajib_4414.expense.tracker.payload.LoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,7 +25,7 @@ public class AuthenticationService {
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public LoginResponse authenticate(LoginRequest request) {
 
         try {
             System.out.println("here printing credentials"+request);
@@ -32,7 +35,7 @@ public class AuthenticationService {
             System.out.println("here after authenticating"+result);
             var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
-            return  AuthenticationResponse.builder().token(jwtToken).build();
+            return  LoginResponse.builder().token(jwtToken).build();
             // Continue with your logic here
         }  catch (Exception e) {
             System.out.println("Authentication failed: " + e.getMessage());
@@ -45,11 +48,10 @@ public class AuthenticationService {
     //default register only allows to get a role of User.
     //later we will add more roles to a User, only via endpoint
     @Transactional
-    public AuthenticationResponse register(RegisterRequest request) {
+    public LoginResponse register(RegisterRequest request) {
 
         Role role = roleRepository.findByName("ROLE_USER").orElseThrow(()-> new RuntimeException("User role yet not defined"));
 
-//        userRoleRepository.save(userRole);
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -67,6 +69,6 @@ public class AuthenticationService {
 
 
         var jwtToken = jwtService.generateToken(user);
-        return  AuthenticationResponse.builder().token(jwtToken).build();
+        return  LoginResponse.builder().token(jwtToken).build();
     }
 }

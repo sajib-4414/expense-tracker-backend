@@ -1,6 +1,6 @@
 package com.sajib_4414.expense.tracker.config;
 
-import jakarta.servlet.Filter;
+import com.sajib_4414.expense.tracker.config.auth.JWTAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration {
+public class GlobalSecurityConfiguration {
 
     //using final and required args construction means spring will automatically inject
-    private final JWTAuthenticationFilter jwtAuthFilter;
+    private final JWTAuthFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
@@ -38,17 +38,6 @@ public class SecurityConfiguration {
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/api/v1/auth/**")
-//                        .permitAll()
-//                        .anyRequest()
-//                        .authenticated()
-//                )
-//                .sessionManagement( sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authenticationProvider(authenticationProvider)
-//                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .build();
+
     }
 }

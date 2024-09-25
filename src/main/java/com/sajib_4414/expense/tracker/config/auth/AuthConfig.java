@@ -1,7 +1,7 @@
-package com.sajib_4414.expense.tracker.config;
+package com.sajib_4414.expense.tracker.config.auth;
 
-import com.sajib_4414.expense.tracker.user.User;
-import com.sajib_4414.expense.tracker.user.UserRepository;
+import com.sajib_4414.expense.tracker.models.user.User;
+import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,15 +17,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig {
+public class AuthConfig {
 
     private final UserRepository repository;
-//    private final UserDetailsService userDetailsService;
     @Bean
     public UserDetailsService userDetailsService() {
 //        return username -> repository.findByEmail(username)
@@ -37,8 +35,9 @@ public class ApplicationConfig {
             System.out.println("printing user roles directly="+user.getUserRoles());
 
             // Assuming your User entity has a method getRoles() that returns a collection of roles
-            Collection<GrantedAuthority> authorities = //Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
-                    user.getRoles().stream()
+            Collection<GrantedAuthority> authorities = user
+                    .getRoles()
+                    .stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
                     .collect(Collectors.toList());
             System.out.println("autorieis called, autority="+authorities);

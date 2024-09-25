@@ -1,4 +1,4 @@
-package com.sajib_4414.expense.tracker.user;
+package com.sajib_4414.expense.tracker.models.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

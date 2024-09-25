@@ -1,6 +1,6 @@
-package com.sajib_4414.expense.tracker.expense;
+package com.sajib_4414.expense.tracker.models.expense;
 
-import com.sajib_4414.expense.tracker.user.User;
+import com.sajib_4414.expense.tracker.models.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
