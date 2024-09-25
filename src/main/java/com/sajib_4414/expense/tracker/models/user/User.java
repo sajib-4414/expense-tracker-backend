@@ -24,10 +24,19 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    @Column(name = "firstname")
     private String firstname;
 
+    @Column(name = "lastname")
     private String lastname;
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "username", unique = true, nullable = false)
+    private String username;
+
+    @Column(name = "password")
     private String password;
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL)
@@ -42,13 +51,9 @@ public class User implements UserDetails {
         return this.getRoles().stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName()))
                 .collect(Collectors.toList());
-//        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     public Set<Role> getRoles(){
-        System.out.println("getting user roles="+userRoles);
-
-
         return userRoles
                 .stream()
                 .map(UserRole::getRole)
@@ -62,7 +67,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
@@ -84,7 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, firstname, email); // Use only fields that don't cause cyclic dependency
+        return Objects.hash(id, firstname, username); // Use only fields that don't cause cyclic dependency
     }
 
     @Override
@@ -92,12 +97,12 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(email, user.email);
+        return Objects.equals(id, user.id) && Objects.equals(username, user.username);
     }
 
     @Override
     public String toString() {
-        return "User{id=" + id + ", username=" + email + "}";
+        return "User{id=" + id + ", username=" + username + "}";
     }
 
 }

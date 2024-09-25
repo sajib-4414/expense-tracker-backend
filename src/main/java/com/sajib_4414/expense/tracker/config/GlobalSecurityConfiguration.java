@@ -30,7 +30,9 @@ public class GlobalSecurityConfiguration {
                         auth
                         .requestMatchers(HttpMethod.GET,"/api/v1/demo").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                         //anything else needs to be authenticated
+                         //the below two line means, anything else needs to be authenticated
+                        //for now we dont need these kind of config, as we are already more explicit like we need authentication
+                        //with ROLE_USER
 //                        .anyRequest()
 //                        .authenticated()
                 )

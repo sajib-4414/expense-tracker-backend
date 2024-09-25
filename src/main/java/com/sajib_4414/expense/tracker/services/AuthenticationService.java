@@ -7,8 +7,10 @@ import com.sajib_4414.expense.tracker.payload.LoginRequest;
 import com.sajib_4414.expense.tracker.payload.LoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.antlr.v4.runtime.Token;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +22,6 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JWTService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -28,12 +29,9 @@ public class AuthenticationService {
     public LoginResponse authenticate(LoginRequest request) {
 
         try {
-            System.out.println("here printing credentials"+request);
-            var token = new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword());
-            System.out.println("here printing token"+token);
-            var result = authenticationManager.authenticate(token);
-            System.out.println("here after authenticating"+result);
-            var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+            var token = new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword());
+            Authentication result = authenticationManager.authenticate(token);
+            var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
             return  LoginResponse.builder().token(jwtToken).build();
             // Continue with your logic here
@@ -56,6 +54,7 @@ public class AuthenticationService {
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
+                .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
 

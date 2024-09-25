@@ -30,9 +30,8 @@ public class AuthConfig {
 //                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return username -> {
-            User user = repository.findByEmail(username)
+            User user = repository.findByUsername(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            System.out.println("printing user roles directly="+user.getUserRoles());
 
             // Assuming your User entity has a method getRoles() that returns a collection of roles
             Collection<GrantedAuthority> authorities = user
@@ -40,9 +39,8 @@ public class AuthConfig {
                     .stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
                     .collect(Collectors.toList());
-            System.out.println("autorieis called, autority="+authorities);
             return new org.springframework.security.core.userdetails.User(
-                    user.getEmail(),
+                    user.getUsername(),
                     user.getPassword(),
                     authorities
             );

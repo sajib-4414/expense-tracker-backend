@@ -32,15 +32,15 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println("do internal filter invoked/....");
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
-        final String userEmail;
+        final String username;
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response); //not attaching any user, passing to the next filter/middleware
             return;
         }
         jwt =authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        if(userEmail !=null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        username = jwtService.extractUsername(jwt);
+        if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null){
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
             if(jwtService.isTokenValid(jwt,userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(

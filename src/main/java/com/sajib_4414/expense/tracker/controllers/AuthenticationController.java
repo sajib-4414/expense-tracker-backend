@@ -26,12 +26,5 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.authenticate(request));
     }
 
-    @RestController
-    @RequestMapping("/api/v1/demo")
-    public static class DemoController {
-        @GetMapping("")
-        public ResponseEntity<String> sayHello(){
-            return ResponseEntity.ok("hello from secured endpoint");
-        }
-    }
+
 }

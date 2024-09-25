@@ -24,6 +24,6 @@ public class Role {
     private int id;
 
 
-    @Column(name = "name")
+    @Column(name = "name",nullable = false, unique = true)
     private String name;
 }
