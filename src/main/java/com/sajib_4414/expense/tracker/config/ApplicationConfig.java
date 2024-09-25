@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -36,7 +37,8 @@ public class ApplicationConfig {
             System.out.println("printing user roles directly="+user.getUserRoles());
 
             // Assuming your User entity has a method getRoles() that returns a collection of roles
-            Collection<GrantedAuthority> authorities = user.getRoles().stream()
+            Collection<GrantedAuthority> authorities = //Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+                    user.getRoles().stream()
                     .map(role -> new SimpleGrantedAuthority(role.getName()))
                     .collect(Collectors.toList());
             System.out.println("autorieis called, autority="+authorities);

@@ -2,6 +2,7 @@ package com.sajib_4414.expense.tracker.auth;
 
 import com.sajib_4414.expense.tracker.config.JWTService;
 import com.sajib_4414.expense.tracker.user.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,23 +44,27 @@ public class AuthenticationService {
 
     //default register only allows to get a role of User.
     //later we will add more roles to a User, only via endpoint
+    @Transactional
     public AuthenticationResponse register(RegisterRequest request) {
 
         Role role = roleRepository.findByName("ROLE_USER").orElseThrow(()-> new RuntimeException("User role yet not defined"));
 
+//        userRoleRepository.save(userRole);
         User user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .build();
-        userRepository.save(user);
-        //now create user role
+
         UserRole userRole = UserRole.builder()
                 .role(role)
                 .user(user)
                 .build();
-        userRoleRepository.save(userRole);
+        user.setUserRoles(Collections.singleton(userRole));
+        userRepository.save(user);
+        //now create user role
+
 
         var jwtToken = jwtService.generateToken(user);
         return  AuthenticationResponse.builder().token(jwtToken).build();
