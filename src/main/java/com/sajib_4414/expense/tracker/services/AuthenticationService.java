@@ -28,18 +28,13 @@ public class AuthenticationService {
 
     public LoginResponse authenticate(LoginRequest request) {
 
-        try {
             var token = new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword());
             Authentication result = authenticationManager.authenticate(token);
             var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
             return  LoginResponse.builder().token(jwtToken).build();
             // Continue with your logic here
-        }  catch (Exception e) {
-            System.out.println("Authentication failed: " + e.getMessage());
 
-        }
-        return null;
 
     }
 
