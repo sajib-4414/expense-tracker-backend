@@ -26,10 +26,13 @@ public class GlobalSecurityConfiguration {
 
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
+                .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(auth ->
                         auth
                         .requestMatchers(HttpMethod.GET,"/api/v1/demo").hasAnyAuthority("ROLE_USER")
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                         .requestMatchers("/api/v1/categories").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/expenses").hasAnyAuthority("ROLE_USER")
+                         .requestMatchers("/api/v1/auth/**").permitAll()
 //                         //the below two line means, anything else needs to be authenticated
 //                        //for now we dont need these kind of config, as we are already more explicit like we need authentication
 //                        //with ROLE_USER

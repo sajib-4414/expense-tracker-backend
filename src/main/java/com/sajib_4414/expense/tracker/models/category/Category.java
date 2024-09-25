@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "e_categories")
+@Table(name = "e_categories", indexes = @Index(columnList = "name"))
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name",nullable = false, unique = true)
     private String name;
 }

@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.expense;
 
+import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="e_expense")
+@Table(name="e_expense", indexes = @Index(columnList = "owner_id"))
 public class Expense {
 
     @Id
@@ -20,8 +21,12 @@ public class Expense {
     private int id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "owner")
+    @JoinColumn(name = "owner_id")
     private User owner;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     @Column(name = "cost")
     private int cost;

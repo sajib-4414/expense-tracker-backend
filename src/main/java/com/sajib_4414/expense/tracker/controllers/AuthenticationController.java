@@ -20,7 +20,7 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping(value = "/register", produces = "application/json")
-    public ResponseEntity<LoginResponse> register(@RequestBody RegisterRequest request){
+    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(service.register(request));
     }
 

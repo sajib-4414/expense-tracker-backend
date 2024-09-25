@@ -1,8 +1,11 @@
 package com.sajib_4414.expense.tracker.config.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -53,4 +56,18 @@ public class GlobalErrorHandler {
                 .build();
         return ResponseEntity.badRequest().body(errorResponse);
     }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    public ResponseEntity<ErrorHttpResponse> handleExpiredJwtException(ExpiredJwtException ex) {
+
+        ErrorDTO error = ErrorDTO.builder().code("token_expired").message("Token Expired, "+ex.getMessage()).build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+
+    }
+
+
 }

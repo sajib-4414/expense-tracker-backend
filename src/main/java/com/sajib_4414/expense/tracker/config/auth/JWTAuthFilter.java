@@ -1,5 +1,7 @@
 package com.sajib_4414.expense.tracker.config.auth;
 
+import com.sajib_4414.expense.tracker.config.exceptions.JWTExpiredException;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,7 +40,13 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             return;
         }
         jwt =authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
+        try{
+            username = jwtService.extractUsername(jwt);
+        } catch (ExpiredJwtException e) {
+            System.out.println("error caught here "+e);
+            throw new JWTExpiredException("JWT token has expired", e);
+        }
+
         if(username !=null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
