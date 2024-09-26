@@ -2,6 +2,7 @@ package com.sajib_4414.expense.tracker.services;
 
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,5 +20,11 @@ public class ExpenseService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal(); //we have our user stored here
         return expenseRepository.getAllExpenseByUser(userDetails.getUsername());
+    }
+
+    public Expense createExpense(@Valid Expense payload) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return expenseRepository.createExpenseForUser(userDetails.getUsername(), payload);
     }
 }
