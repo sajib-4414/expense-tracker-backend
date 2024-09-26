@@ -1,5 +1,8 @@
 package com.sajib_4414.expense.tracker.config.exceptions;
 
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.SystemException;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,10 +14,12 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -64,16 +69,7 @@ public class GlobalErrorHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler(ExpiredJwtException.class)
-    public ResponseEntity<ErrorHttpResponse> handleExpiredJwtException(ExpiredJwtException ex) {
 
-        ErrorDTO error = ErrorDTO.builder().code("token_expired").message("Token Expired, "+ex.getMessage()).build();
-        ErrorHttpResponse errorResponse = ErrorHttpResponse
-                .builder()
-                .errors(Collections.singletonList(error))
-                .build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-    }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorHttpResponse> handleDuplicateEntry(DataIntegrityViolationException ex) {
@@ -93,6 +89,55 @@ public class GlobalErrorHandler {
                 .errors(Collections.singletonList(error))
                 .build();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(ItemNotFoundException.class)
+    public ResponseEntity<ErrorHttpResponse> handleItemNotFound(ItemNotFoundException ex) {
+        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).message(ex.getMessage()).build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(PermissionError.class)
+    public ResponseEntity<ErrorHttpResponse> handlePermissionError(PermissionError ex) {
+        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).message(ex.getMessage()).build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    }
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorHttpResponse> handlePermissionError(NoResourceFoundException ex) {
+        ErrorDTO error = ErrorDTO.builder().code("invalid_resouce").message("invalid_resouce").build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
+    @ExceptionHandler(SystemException.class)
+    public ResponseEntity<ErrorHttpResponse> handleSystemError(SystemException ex) {
+        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).message(ex.getMessage()).build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ErrorHttpResponse> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+        ErrorDTO error = ErrorDTO.builder().code("not_allowed").message("Method not allowed").build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(errorResponse);
     }
 
 }

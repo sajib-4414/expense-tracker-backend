@@ -34,7 +34,7 @@ public class GlobalSecurityConfiguration {
                         auth
                         .requestMatchers(HttpMethod.GET,"/api/v1/demo").hasAnyAuthority("ROLE_USER")
                          .requestMatchers("/api/v1/categories").hasAnyAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/v1/expenses").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/api/v1/expenses/**").hasAnyAuthority("ROLE_USER")
                          .requestMatchers("/api/v1/auth/**").permitAll()
                          .requestMatchers("/error").permitAll()
 //                         //the below two line means, anything else needs to be authenticated

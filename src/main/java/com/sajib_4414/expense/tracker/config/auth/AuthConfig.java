@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.config.auth;
 
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class AuthConfig {
 
         return username -> {
             User user = repository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    .orElseThrow(() -> new ItemNotFoundException("User not found"));
 
             // Assuming your User entity has a method getRoles() that returns a collection of roles
             Collection<GrantedAuthority> authorities = user

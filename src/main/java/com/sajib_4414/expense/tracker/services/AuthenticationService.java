@@ -1,5 +1,7 @@
 package com.sajib_4414.expense.tracker.services;
 
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.SystemException;
 import com.sajib_4414.expense.tracker.payload.RegisterRequest;
 import com.sajib_4414.expense.tracker.config.auth.JWTService;
 import com.sajib_4414.expense.tracker.models.user.*;
@@ -9,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,10 +32,17 @@ public class AuthenticationService {
     public LoginResponse authenticate(LoginRequest request) {
 
             var token = new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword());
-            Authentication result = authenticationManager.authenticate(token);
-            var user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+            try{
+                Authentication result = authenticationManager.authenticate(token);
+
+            }catch (InternalAuthenticationServiceException ex){
+                throw new ItemNotFoundException("User not found");
+            }
+            var user = userRepository.findByUsername(request.getUsername()).orElseThrow(()->new ItemNotFoundException("User not found"));
             var jwtToken = jwtService.generateToken(user);
             return  LoginResponse.builder().token(jwtToken).build();
+
+
             // Continue with your logic here
 
 
@@ -43,7 +53,7 @@ public class AuthenticationService {
     @Transactional
     public LoginResponse register(RegisterRequest request) {
 
-        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(()-> new RuntimeException("User role yet not defined"));
+        Role role = roleRepository.findByName("ROLE_USER").orElseThrow(()-> new SystemException("User role yet not defined"));
 
             User user = User.builder()
                     .firstname(request.getFirstname())

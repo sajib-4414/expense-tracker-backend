@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.user;
 
+import com.sajib_4414.expense.tracker.models.expense.Expense;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +46,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL) //mapped by is the entity model's field name
     @Builder.Default
     private Set<UserRole> userRoles = new HashSet<>();
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Expense> expenseList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

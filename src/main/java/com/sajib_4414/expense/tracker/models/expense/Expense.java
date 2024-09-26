@@ -28,18 +28,15 @@ public class Expense {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "owner_id")
     @JsonIgnore
     private User owner;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "category_id")
-    @NotNull(message = "Category obj is required")
     private Category category;
 
     @Column(name = "cost")
-    @NotNull(message = "Cost is required")
-    @Min(value = 0, message = "Cost must be greater than or equal to 0")
     private int cost;
 }

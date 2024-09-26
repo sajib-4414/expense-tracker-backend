@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -45,6 +46,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             final String jwt;
             final String username;
             if(authHeader == null || !authHeader.startsWith("Bearer ")){
+                System.out.println("No token given, all good, passing to next filter");
                 filterChain.doFilter(request,response); //not attaching any user, passing to the next filter/middleware
                 return;
             }
@@ -65,7 +67,9 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+            System.out.println("everything done in jwt, passed to next filter");
             filterChain.doFilter(request,response);
+
         } catch (ExpiredJwtException ex) {
             // Handle the exception and return the error response directly
             ErrorDTO error = ErrorDTO.builder()
@@ -84,6 +88,22 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             // Handle the exception and return the error response directly
             ErrorDTO error = ErrorDTO.builder()
                     .code("token_wrong")
+                    .message("Authentication error, " + ex.getMessage())
+                    .build();
+            ErrorHttpResponse errorResponse = ErrorHttpResponse.builder()
+                    .errors(Collections.singletonList(error))
+                    .build();
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+            return; // Prevent further processing
+        }
+        catch (InternalAuthenticationServiceException ex) {
+
+            System.out.println("this exception happened...");
+            // Handle the exception and return the error response directly
+            ErrorDTO error = ErrorDTO.builder()
+                    .code("token_wrong_v2")
                     .message("Authentication error, " + ex.getMessage())
                     .build();
             ErrorHttpResponse errorResponse = ErrorHttpResponse.builder()
