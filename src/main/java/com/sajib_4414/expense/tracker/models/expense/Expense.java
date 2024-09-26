@@ -28,12 +28,12 @@ public class Expense {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "owner_id")
     @JsonIgnore
     private User owner;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 

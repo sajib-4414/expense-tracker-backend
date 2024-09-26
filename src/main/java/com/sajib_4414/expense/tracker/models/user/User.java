@@ -47,7 +47,7 @@ public class User implements UserDetails {
     @Builder.Default
     private Set<UserRole> userRoles = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenseList;
 
     @Override

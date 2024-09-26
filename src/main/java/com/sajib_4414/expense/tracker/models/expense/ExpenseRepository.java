@@ -65,9 +65,11 @@ public class ExpenseRepository {
     public void remove(Expense validatedExpense) {
         System.out.println("I am inside remove, expense="+validatedExpense);
         try{
-            entityManager.createQuery("DELETE FROM Expense e WHERE e.id = :id")
-                    .setParameter("id",validatedExpense.getId())
-                    .executeUpdate();
+            //alternate raw query
+//            entityManager.createQuery("DELETE FROM Expense e WHERE e.id = :id")
+//                    .setParameter("id",validatedExpense.getId())
+//                    .executeUpdate();
+            entityManager.remove(validatedExpense);
         }catch (InvalidDataAccessApiUsageException e){
             System.out.println("caught this exception,"+e);
         }
