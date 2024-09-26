@@ -7,6 +7,25 @@ and return a customized error. although i am using
 spring validation plugin, yet all 400,422 are wrapped with 
 403 by spring security.
 
+#### How to use flyaway
+- in build.gradle
+```declarative
+implementation 'org.flywaydb:flyway-core'
+implementation 'org.flywaydb:flyway-database-postgresql'
+```
+- disable spring's default database modification functionality, so your changes
+are gradual and tracked.
+in application.properties file
+`spring.jpa.hibernate.ddl-auto=none`
+- Now, enable creating migration history folder, to do that in application.properties file
+`spring.flyway.baselineOnMigrate = true`. This will create the flyaway_schema_history table
+Run the project at this time to see if this table is created. Ensure
+- Start writign sql. Default path is resources -> db -> migration folder.
+sql file naming convension:
+`VX_X_X__NAME.sql or VX__NAME.sql ` Example: `V1_0_1__creating_dummy_user.sql`
+That Two **__** is a MUST
+- Special Note: For project where Tables are already created, dont start with V1. 
+Must start with at least V1_0_1.
 ### Many to One and one to Many
 
 #### Understanding CASCADETYPE
