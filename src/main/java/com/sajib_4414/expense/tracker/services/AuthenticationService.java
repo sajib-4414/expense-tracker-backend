@@ -7,7 +7,7 @@ import com.sajib_4414.expense.tracker.payload.LoginRequest;
 import com.sajib_4414.expense.tracker.payload.LoginResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.antlr.v4.runtime.Token;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,24 +45,27 @@ public class AuthenticationService {
 
         Role role = roleRepository.findByName("ROLE_USER").orElseThrow(()-> new RuntimeException("User role yet not defined"));
 
-        User user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .username(request.getUsername())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .build();
+            User user = User.builder()
+                    .firstname(request.getFirstname())
+                    .lastname(request.getLastname())
+                    .email(request.getEmail())
+                    .username(request.getUsername())
+                    .password(passwordEncoder.encode(request.getPassword()))
+                    .build();
 
-        UserRole userRole = UserRole.builder()
-                .role(role)
-                .user(user)
-                .build();
-        user.setUserRoles(Collections.singleton(userRole));
-        userRepository.save(user);
-        //now create user role
+            UserRole userRole = UserRole.builder()
+                    .role(role)
+                    .user(user)
+                    .build();
+            user.setUserRoles(Collections.singleton(userRole));
+            userRepository.save(user);
+            //now create user role
 
 
-        var jwtToken = jwtService.generateToken(user);
-        return  LoginResponse.builder().token(jwtToken).build();
+            var jwtToken = jwtService.generateToken(user);
+            return  LoginResponse.builder().token(jwtToken).build();
+
+
+
     }
 }
