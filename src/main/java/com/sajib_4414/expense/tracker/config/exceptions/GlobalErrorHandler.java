@@ -3,16 +3,10 @@ package com.sajib_4414.expense.tracker.config.exceptions;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.SystemException;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,9 +16,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -55,7 +47,7 @@ public class GlobalErrorHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorHttpResponse> handleBadCredentials(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorHttpResponse> handleMissingPayloadParams(MethodArgumentNotValidException ex) {
         List<ErrorDTO> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(fieldError -> ErrorDTO.builder()
                         .code(fieldError.getCode())
@@ -111,7 +103,7 @@ public class GlobalErrorHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorHttpResponse> handlePermissionError(NoResourceFoundException ex) {
+    public ResponseEntity<ErrorHttpResponse> handleNoResourceFound(NoResourceFoundException ex) {
         ErrorDTO error = ErrorDTO.builder().code("invalid_resouce").message("invalid_resouce").build();
         ErrorHttpResponse errorResponse = ErrorHttpResponse
                 .builder()
