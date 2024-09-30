@@ -71,4 +71,10 @@ public class ExpenseService {
         Expense validatedExpense = validate(expenseId);
         expenseRepository.remove(validatedExpense);
     }
+
+    @Transactional
+    public Expense update(@Valid ExpenseDTO payload, @Valid int expenseId) {
+        Expense validatedExpense = validate(expenseId);
+        return expenseRepository.updateExpense(validatedExpense, payload);
+    }
 }

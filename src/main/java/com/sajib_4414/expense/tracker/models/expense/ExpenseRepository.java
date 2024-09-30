@@ -8,7 +8,9 @@ import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,7 @@ public class ExpenseRepository {
     private EntityManager entityManager;
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
+    private ModelMapper modelMapper;
 
     public List<Expense> getAllExpenseByUser (String username){
         return entityManager
@@ -37,6 +40,7 @@ public class ExpenseRepository {
         Expense expense = Expense
                 .builder()
                 .owner(owner)
+                .notes(payload.getNotes())
                 .cost(payload.getCost())
                 .category(category)
                 .build();
@@ -77,5 +81,17 @@ public class ExpenseRepository {
             System.out.println("caught this generic,"+e);
         }
 
+    }
+
+    public Expense updateExpense(Expense dbRetrievedExpense, ExpenseDTO expenseDTO) {
+        //this auto maps the compatiable fields only like cost, notes. for which DTO and model fields name are the same
+        modelMapper.map(expenseDTO, dbRetrievedExpense);
+
+        //for category, atuomatica mapping is not going to work, as client passes only id
+        Category newCategory = categoryRepository.findById(expenseDTO.getCategory_id()).orElseThrow(()->new ItemNotFoundException("category now found"));
+        dbRetrievedExpense.setCategory(newCategory);
+        entityManager.merge(dbRetrievedExpense);
+        //automatically updates
+        return dbRetrievedExpense;
     }
 }

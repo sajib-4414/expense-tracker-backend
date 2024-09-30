@@ -42,9 +42,9 @@ public class ExpenseController {
         return ResponseEntity.ok().body(expenseService.updateCost(payload, expenseId));
     }
 
-    @PutMapping("/updatecategory/{expenseId}")
+    @PutMapping("/{expenseId}")
     public ResponseEntity<Expense> updateCategory(@Valid @RequestBody ExpenseDTO payload, @Valid @PathVariable int expenseId){
-        return ResponseEntity.ok().body(expenseService.updateCategory(payload, expenseId));
+        return ResponseEntity.ok().body(expenseService.update(payload, expenseId));
     }
 
     @DeleteMapping("/{expenseId}")

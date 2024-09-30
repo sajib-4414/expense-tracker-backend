@@ -16,6 +16,11 @@ public class ExpenseDTO implements Serializable {
     @Min(value = 1, message = "Please provide a valid category")
     private int category_id;
 
+    private String notes;
+
+    public String getNotes() {
+        return notes;
+    }
 
     public int getCost() {
         return cost;

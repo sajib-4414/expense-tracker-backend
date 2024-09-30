@@ -39,4 +39,7 @@ public class Expense {
 
     @Column(name = "cost")
     private int cost;
+
+    @Column(name = "notes", length = 200)
+    private String notes;
 }
