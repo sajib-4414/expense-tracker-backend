@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.user;
 
+import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,10 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.REMOVE)
+    private Set<Category> myCustomCategories;
+
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL)
 //    private List<Expense> expenseList;

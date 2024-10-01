@@ -27,10 +27,22 @@ public class CategoryController {
         return ResponseEntity.ok().body(categoryService.create(payload));
     }
 
-    @GetMapping("")
+    //returns all the categories created by all the users, only open to admin user.
+    @GetMapping("/all-categories")
     protected ResponseEntity<List<Category>> getAllCategories(){
-//        throw new NullPointerException("null found");
-        return ResponseEntity.ok().body(categoryService.getAll());
+        return ResponseEntity.ok().body(categoryService.getFullCategories());
+    }
+
+    //returns system categories plus categories created by user.
+    @GetMapping("")
+    protected ResponseEntity<List<Category>> getCategories(){
+        return ResponseEntity.ok().body(categoryService.getCategories());
+    }
+
+    //returns only user's created custom categories
+    @GetMapping("/mycategories")
+    protected ResponseEntity<List<Category>> getMyCategories(){
+        return ResponseEntity.ok().body(categoryService.getMyCategories());
     }
 
 

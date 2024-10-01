@@ -7,9 +7,11 @@ import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.hibernate.NonUniqueResultException;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.stereotype.Repository;
@@ -93,5 +95,23 @@ public class ExpenseRepository {
         entityManager.merge(dbRetrievedExpense);
         //automatically updates
         return dbRetrievedExpense;
+    }
+
+    public Boolean isCategoryOwner(String username, int categoryId) {
+
+        try{
+            Category category = entityManager.createQuery("select c from Category c where c.id= :categoryId " +
+                            "and c.createdBy.id=(select u.id from User u where u.username= :username)", Category.class)
+                    .setParameter("username",username )
+                    .setParameter("categoryId",categoryId)
+                    .getSingleResult();
+            return category!=null;
+        } catch (NoResultException e) {
+            return false; // No category found
+        } catch (NonUniqueResultException e) {
+            // Handle the case where multiple results are found
+            return false; // or log an error
+        }
+
     }
 }
