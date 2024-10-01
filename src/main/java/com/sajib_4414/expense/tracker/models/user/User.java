@@ -2,6 +2,7 @@ package com.sajib_4414.expense.tracker.models.user;
 
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
+import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,6 +55,12 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenseList;
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Category> myCategoriesList;
+
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<IncomeSource> myIncomeSourceList;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

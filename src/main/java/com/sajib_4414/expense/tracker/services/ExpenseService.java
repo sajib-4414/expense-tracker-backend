@@ -8,6 +8,7 @@ import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
 import com.sajib_4414.expense.tracker.models.user.Role;
+import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -23,6 +24,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
+
 @Service
 @AllArgsConstructor
 public class ExpenseService {
@@ -30,30 +33,28 @@ public class ExpenseService {
     private CategoryRepository categoryRepository;
 
     public List<Expense> getCurrentUserExpense(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal(); //we have our user stored here
-        return expenseRepository.getAllExpenseByUser(userDetails.getUsername());
+        return expenseRepository.getAllExpenseByUser(getCurrentUser().getUsername());
     }
 
     public Expense createExpense(ExpenseDTO payload) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
         //check if the user is admin, then allow creating expense in any categories, although admin wont do that ever.
         //if not admin, check if thats the category he has access to.
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+        User currentUser = getCurrentUser();
+        Collection<? extends GrantedAuthority> authorities = getCurrentUser().getAuthorities();
         List<GrantedAuthority> userAuthorities = new ArrayList<>(authorities);
 
         Optional<GrantedAuthority> adminAuthority = userAuthorities.stream().filter( authority -> authority.getAuthority().equals(Roles.ADMIN)).findAny();
         if(adminAuthority.isPresent()){
             //he is an admin, allow creating with any category
-            return expenseRepository.createExpenseForUser(userDetails.getUsername(), payload);
+            return expenseRepository.createExpenseForUser(currentUser.getUsername(), payload);
         }
         else{
             //check if he own the category
             //check if we can get any category with his username
-            Boolean isOwner = categoryRepository.isUserCategoryOwner( userDetails.getUsername(), payload.getCategory_id());
+            Boolean isOwner = categoryRepository.isUserCategoryOwner( currentUser.getUsername(), payload.getCategory_id());
             if(isOwner)
-                return expenseRepository.createExpenseForUser(userDetails.getUsername(), payload);
+                return expenseRepository.createExpenseForUser(currentUser.getUsername(), payload);
             else
                 throw new PermissionError("You dont have permission to create this expense with this category");
         }
@@ -82,9 +83,8 @@ public class ExpenseService {
         if(!optionalExpense.isPresent()){
             throw new ItemNotFoundException("Expense not found");
         }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        if(!optionalExpense.get().getOwner().getUsername().equals(userDetails.getUsername())){
+
+        if(!optionalExpense.get().getOwner().getUsername().equals(getCurrentUser().getUsername())){
             throw new PermissionError();
         }
         return optionalExpense.get();

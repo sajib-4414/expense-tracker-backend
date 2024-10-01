@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
+
 @Service
 @AllArgsConstructor
 public class CategoryService {
@@ -82,11 +84,7 @@ public class CategoryService {
 
 
     }
-    public User getCurrentUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal(); //we have our user stored here
-        return user;
-    }
+
 
     public void checkOwnershipAndThrow(int categoryId){
         Boolean isOwner = categoryRepository.isUserCategoryOwner(getCurrentUser().getUsername(), categoryId);
