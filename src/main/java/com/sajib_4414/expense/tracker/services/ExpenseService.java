@@ -51,7 +51,7 @@ public class ExpenseService {
         else{
             //check if he own the category
             //check if we can get any category with his username
-            Boolean isOwner = expenseRepository.isCategoryOwner( userDetails.getUsername(), payload.getCategory_id());
+            Boolean isOwner = categoryRepository.isUserCategoryOwner( userDetails.getUsername(), payload.getCategory_id());
             if(isOwner)
                 return expenseRepository.createExpenseForUser(userDetails.getUsername(), payload);
             else
@@ -101,4 +101,6 @@ public class ExpenseService {
         Expense validatedExpense = validate(expenseId);
         return expenseRepository.updateExpense(validatedExpense, payload);
     }
+
+
 }

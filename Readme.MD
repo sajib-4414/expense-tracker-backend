@@ -30,7 +30,7 @@ Must start with at least V1_0_1.
 
 #### Understanding CASCADETYPE
 - you need to put CASCADETYPE on the parent, NOT on the child.
-```java
+```
 
 Post{
     @OneToMany(cascade=cascadetype.REMOVE)

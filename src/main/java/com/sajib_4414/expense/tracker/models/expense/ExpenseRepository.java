@@ -97,21 +97,21 @@ public class ExpenseRepository {
         return dbRetrievedExpense;
     }
 
-    public Boolean isCategoryOwner(String username, int categoryId) {
+//    public Boolean isCategoryOwner(String username, int categoryId) {
+//
+//        try{
+//            Category category = entityManager.createQuery("select c from Category c where c.id= :categoryId " +
+//                            "and c.createdBy.id=(select u.id from User u where u.username= :username)", Category.class)
+//                    .setParameter("username",username )
+//                    .setParameter("categoryId",categoryId)
+//                    .getSingleResult();
+//            return category!=null;
+//        } catch (NoResultException e) {
+//            return false; // No category found
+//        } catch (NonUniqueResultException e) {
+//            // Handle the case where multiple results are found
+//            return false; // or log an error
+//        }
 
-        try{
-            Category category = entityManager.createQuery("select c from Category c where c.id= :categoryId " +
-                            "and c.createdBy.id=(select u.id from User u where u.username= :username)", Category.class)
-                    .setParameter("username",username )
-                    .setParameter("categoryId",categoryId)
-                    .getSingleResult();
-            return category!=null;
-        } catch (NoResultException e) {
-            return false; // No category found
-        } catch (NonUniqueResultException e) {
-            // Handle the case where multiple results are found
-            return false; // or log an error
-        }
-
-    }
+//    }
 }

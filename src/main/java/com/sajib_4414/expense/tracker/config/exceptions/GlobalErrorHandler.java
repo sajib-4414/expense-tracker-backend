@@ -108,7 +108,7 @@ public class GlobalErrorHandler {
                 .builder()
                 .errors(Collections.singletonList(error))
                 .build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorHttpResponse> handlePermissionError(NoResourceFoundException ex) {

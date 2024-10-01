@@ -33,18 +33,19 @@ public class AuthConfig {
         return username -> {
             User user = repository.findByUsername(username)
                     .orElseThrow(() -> new ItemNotFoundException("User not found"));
+            return user;
 
             // Assuming your User entity has a method getRoles() that returns a collection of roles
-            Collection<GrantedAuthority> authorities = user
-                    .getRoles()
-                    .stream()
-                    .map(role -> new SimpleGrantedAuthority(role.getName()))
-                    .collect(Collectors.toList());
-            return new org.springframework.security.core.userdetails.User(
-                    user.getUsername(),
-                    user.getPassword(),
-                    authorities
-            );
+//            Collection<GrantedAuthority> authorities = user
+//                    .getRoles()
+//                    .stream()
+//                    .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                    .collect(Collectors.toList());
+//            return new org.springframework.security.core.userdetails.User(
+//                    user.getUsername(),
+//                    user.getPassword(),
+//                    authorities
+//            );
         };
     }
 

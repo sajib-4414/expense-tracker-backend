@@ -27,6 +27,17 @@ public class CategoryController {
         return ResponseEntity.ok().body(categoryService.create(payload));
     }
 
+    @PutMapping("/{categoryId}")
+    protected ResponseEntity<Category> updateCategory(@Valid @RequestBody CategoryCreate payload, @PathVariable int categoryId){
+        return ResponseEntity.ok().body(categoryService.updateCategory(payload, categoryId));
+    }
+
+    @DeleteMapping("/{categoryId}")
+    protected ResponseEntity<Category> deleteCategory( @PathVariable int categoryId){
+        categoryService.deleteCategory(categoryId);
+        return ResponseEntity.noContent().build();
+    }
+
     //returns all the categories created by all the users, only open to admin user.
     @GetMapping("/all-categories")
     protected ResponseEntity<List<Category>> getAllCategories(){
