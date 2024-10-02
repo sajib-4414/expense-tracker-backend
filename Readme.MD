@@ -160,6 +160,61 @@ public class User implements UserDetails {
 
 ```
 
-### Miscelleneous problem solve.
+### Miscelleneous problem solve or Problems(unsolved)
 * Primary key is coming like 400,450,500 why?
 _Solve_: use generation strategy=identity in entity model. That will use incremental number.
+* Problem: Transactional not working when put at class level to roll back test data
+in test classes and methods.
+
+solution: use @Transactional in the test methods not class to have the rollback automatic.
+* Problem: Testing does not delete data created on the database with BeforeAll /beforeClass
+
+Explanation: Usually in test methods, if I put @Transactional, then all the data
+that has been written on DB during test, will be deleted/rollbacked. but I if i want the
+**beforeAll** method to do something that writes to data, for example, before all test, 
+lets create a user which will be used for all test, then that setup wants tobe 
+static, and inside static we cannot use autowired mockmvc at all. if we also workaround like this
+```declarative
+
+public class CategoryControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+    private String jwtToken;
+
+    @Transactional
+    @BeforeAll
+    @Rollback(value = true)
+    public  static void setUp(WebApplicationContext wac) throws Exception {
+        RegisterRequest request = new RegisterRequest();
+        request.setFirstname("John");
+        request.setLastname("Doe");
+        request.setUsername("john");
+        request.setEmail("john.doe@example.com");
+        request.setPassword("password123");
+
+        ObjectMapper privateIObjectMapper = new ObjectMapper();
+        MockMvc privateMVC = MockMvcBuilders.webAppContextSetup(wac).build();
+        String jsonRequest = privateIObjectMapper.writeValueAsString(request);
+
+
+        privateMVC.perform
+                        (post("/api/v1/auth/register")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(jsonRequest)
+                        )
+                .andExpect(status().isCreated());
+
+    }
+```
+Transaction does not work at all here, the data is persisted. Transactional annotation
+only work in @Test(test methods) or @BeforeEach methods. 
+
+Workaround: so, dont make any api calls that create data on the database, in the BeforeALl
+static method. @Transactional does not work. test data created on this @Beforeall
+stays in the database and next time test fails. You have two options, either deleting 
+the data created in @beforeall manually, or use @beforeach. data used in before each
+are rolled back.
