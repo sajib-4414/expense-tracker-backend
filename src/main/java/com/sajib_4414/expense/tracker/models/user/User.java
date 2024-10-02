@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "firstname")
@@ -42,23 +43,28 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.REMOVE)
+    @JsonManagedReference
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Category> myCustomCategories;
 
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL)
 //    private List<Expense> expenseList;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL) //mapped by is the entity model's field name
     @Builder.Default
     private Set<UserRole> userRoles = new HashSet<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenseList;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Category> myCategoriesList;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<IncomeSource> myIncomeSourceList;
 

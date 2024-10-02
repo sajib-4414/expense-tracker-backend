@@ -1,6 +1,7 @@
 package com.sajib_4414.expense.tracker.models.category;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.user.User;
@@ -20,12 +21,13 @@ import java.util.List;
 @Table(name = "e_categories", indexes = @Index(columnList = "name"))
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "created_by")
+    @JsonBackReference //reduntant, use in case we dont ignore
     private User createdBy;
 
     @Column(name = "name",nullable = false, unique = true)

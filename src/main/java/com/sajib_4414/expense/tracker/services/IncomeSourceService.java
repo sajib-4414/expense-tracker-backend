@@ -8,6 +8,7 @@ import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.payload.IncomeSourceDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -19,6 +20,7 @@ import java.util.List;
 import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 
 @Service
+@AllArgsConstructor
 public class IncomeSourceService {
     private IncomeSourceRepository incomeSourceRepository;
 

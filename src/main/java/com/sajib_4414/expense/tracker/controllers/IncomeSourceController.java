@@ -20,12 +20,12 @@ public class IncomeSourceController {
 
     @GetMapping
     public ResponseEntity<List<IncomeSource>> getIncomeSources(){
-        return ResponseEntity.status(HttpStatus.CREATED).body(incomeSourceService.getIncomeSources());
+        return ResponseEntity.ok().body(incomeSourceService.getIncomeSources());
     }
 
     @PostMapping
     public ResponseEntity<IncomeSource> createIncomeSource(@RequestBody @Valid IncomeSourceDTO payload){
-        return ResponseEntity.ok().body(incomeSourceService.create(payload));
+        return ResponseEntity.status(HttpStatus.CREATED).body(incomeSourceService.create(payload));
     }
 
     @PutMapping("/{incomeSourceId}")
@@ -34,7 +34,7 @@ public class IncomeSourceController {
         return ResponseEntity.ok().body(incomeSourceService.update(payload,incomeSourceId));
     }
 
-    @PutMapping("/{incomeSourceId}")
+    @DeleteMapping("/{incomeSourceId}")
     public ResponseEntity<IncomeSource> deleteIncomeResource(@PathVariable @Valid int incomeSourceId)
     {
         incomeSourceService.delete(incomeSourceId);

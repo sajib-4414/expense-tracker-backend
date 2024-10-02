@@ -1,5 +1,7 @@
 package com.sajib_4414.expense.tracker.models.user;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +18,12 @@ import java.util.Objects;
 @Table(name = "e_user_role")
 public class UserRole {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
+    @JsonIgnore
+    @JsonBackReference //reduntant, use in case we dont ignore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

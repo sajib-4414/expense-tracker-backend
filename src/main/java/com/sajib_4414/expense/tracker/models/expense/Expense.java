@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.expense;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sajib_4414.expense.tracker.models.category.Category;
@@ -24,12 +25,13 @@ import org.springframework.lang.NonNull;
 public class Expense {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private int id;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @JsonBackReference //reduntant, use in case we dont ignore
     @JsonIgnore
     private User owner;
 

@@ -57,24 +57,109 @@ use PERSIST.
 
 also there are REFRESH.
 
-Orphan Removal:
+**Orphan Removal:**
+
 When you use orphan removal in JPA with orphanRemoval = true, any time you remove a child entity from the parent’s collection (for example, by using the remove() method on a list), that child entity will be automatically deleted from the database.
 
 How It Works
 Configuration: You configure orphan removal in your entity relationship like this:
 
-java
-Copy code
+```java
 @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 private List<Child> children = new ArrayList<>();
+```
+
 Removing a Child:
 
 When you modify the children list by removing a child, you’re telling JPA that this child is no longer associated with the parent.
-java
-Copy code
+```declarative
 Parent parent = entityManager.find(Parent.class, parentId);
 Child childToRemove = ...; // Assume this is a child you want to remove
 parent.getChildren().remove(childToRemove); // Remove from the collection
+```
 Automatic Deletion:
 
 After you call remove() on the list, if you persist or merge the parent entity, JPA will automatically delete the childToRemove entity from the database.
+
+
+#### JSON serialization problem:
+* use `Jsonignore` if you want to omit some field during serializing json output.
+* use `@JsonProperty(access = JsonProperty.Access.READ_ONLY)` A read-only property is included in the JSON output (serialization) but ignored during JSON input (deserialization).
+```declarative
+public class User {
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    private Long id;
+
+    private String username;
+
+    // Getters and setters
+}
+
+```
+* A write-only property is ignored during JSON output (serialization) but included during JSON input (deserialization).
+```declarative
+public class User {
+    private Long id;
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    private String username;
+
+    // Getters and setters
+}
+
+```
+* **To avoid circular reference and exception**, in JSON serialization 
+like (User->userList->user->userList->user), use jsonignore/writeonly/readonly
+or Managed reference and back reference.
+
+`@JsonManagedReference`
+
+Usage: This annotation is used on the parent side of the relationship.
+
+Function: It indicates that this part of the relationship should be serialized normally.
+
+Example: In a User entity that has a collection of UserRole entities, you would 
+place `@JsonManagedReference` on the userRoles field.
+
+```declarative
+@Entity
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<UserRole> userRoles = new HashSet<>();
+
+    // other fields, getters, and setters
+}
+
+```
+
+`@JsonBackReference`
+
+Usage: This annotation is used on the child side of the relationship.
+
+Function: It indicates that this part of the relationship should be ignored during serialization to prevent circular references
+```declarative
+@Entity
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<UserRole> userRoles = new HashSet<>();
+
+    // other fields, getters, and setters
+}
+
+```
+
+### Miscelleneous problem solve.
+* Primary key is coming like 400,450,500 why?
+_Solve_: use generation strategy=identity in entity model. That will use incremental number.
