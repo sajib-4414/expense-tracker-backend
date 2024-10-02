@@ -7,6 +7,8 @@ import com.sajib_4414.expense.tracker.services.AuthenticationService;
 import com.sajib_4414.expense.tracker.payload.RegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
@@ -21,7 +23,7 @@ public class AuthenticationController {
 
     @PostMapping(value = "/register", produces = "application/json")
     public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request){
-        return ResponseEntity.ok(service.register(request));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.register(request));
     }
 
     @PostMapping(value = "/authenticate", produces = "application/json")
