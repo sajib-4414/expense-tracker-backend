@@ -1,8 +1,11 @@
 package com.sajib_4414.expense.tracker.models.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.sajib_4414.expense.tracker.models.budget.Budget;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
+import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,15 +44,8 @@ public class User implements UserDetails {
     private String username;
 
     @Column(name = "password")
+    @JsonIgnore
     private String password;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
-    private Set<Category> myCustomCategories;
-
-
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "owner", cascade = CascadeType.ALL)
-//    private List<Expense> expenseList;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL) //mapped by is the entity model's field name
@@ -57,16 +53,26 @@ public class User implements UserDetails {
     private Set<UserRole> userRoles = new HashSet<>();
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Expense> expenseList;
-
-    @JsonManagedReference
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    private List<Category> myCategoriesList;
+    private Set<Category> myCustomCategories;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Budget> myBudgets;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<IncomeSource> myIncomeSourceList;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Income> myIncomes;
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private List<Expense> expenseList;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

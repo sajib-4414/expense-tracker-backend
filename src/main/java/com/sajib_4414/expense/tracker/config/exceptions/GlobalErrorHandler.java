@@ -73,7 +73,7 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorHttpResponse> handleDuplicateEntry(DataIntegrityViolationException ex) {
-        ErrorDTO error = ErrorDTO.builder().code("duplicate_entry").message("Data exists already").build();
+        ErrorDTO error = ErrorDTO.builder().code("data_error").message("Duplicate data or other error").build();
         ErrorHttpResponse errorResponse = ErrorHttpResponse
                 .builder()
                 .errors(Collections.singletonList(error))

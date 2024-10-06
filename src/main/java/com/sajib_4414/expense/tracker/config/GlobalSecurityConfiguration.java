@@ -36,6 +36,7 @@ public class GlobalSecurityConfiguration {
                         .requestMatchers("/api/v1/categories/all-categories").hasAuthority(Roles.ADMIN)
                          .requestMatchers("/api/v1/categories/**").hasAnyAuthority(Roles.USER, Roles.ADMIN)
                         .requestMatchers("/api/v1/income/income-source/**").hasAuthority(Roles.USER)
+                         .requestMatchers("/api/v1/income/**").hasAuthority(Roles.USER)
                         .requestMatchers("/api/v1/expenses/**").hasAnyAuthority(Roles.USER, Roles.ADMIN)
                          .requestMatchers("/api/v1/auth/**").permitAll()
                          .requestMatchers("/error").permitAll()
