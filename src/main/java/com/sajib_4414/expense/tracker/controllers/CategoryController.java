@@ -4,7 +4,6 @@ import com.sajib_4414.expense.tracker.config.exceptions.ErrorDTO;
 import com.sajib_4414.expense.tracker.config.exceptions.ErrorHttpResponse;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.payload.CategoryCreate;
-import com.sajib_4414.expense.tracker.payload.LoginResponse;
 import com.sajib_4414.expense.tracker.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.sajib_4414.expense.tracker.controllers;
 
 
+import com.sajib_4414.expense.tracker.payload.AuthResponse;
 import com.sajib_4414.expense.tracker.payload.LoginRequest;
-import com.sajib_4414.expense.tracker.payload.LoginResponse;
 import com.sajib_4414.expense.tracker.services.AuthenticationService;
 import com.sajib_4414.expense.tracker.payload.RegisterRequest;
 import jakarta.validation.Valid;
@@ -20,12 +20,12 @@ public class AuthenticationController {
     private final AuthenticationService service;
 
     @PostMapping(value = "/register", produces = "application/json")
-    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request){
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(service.register(request));
     }
 
     @PostMapping(value = "/authenticate", produces = "application/json")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request){
         return ResponseEntity.ok(service.authenticate(request));
     }
 

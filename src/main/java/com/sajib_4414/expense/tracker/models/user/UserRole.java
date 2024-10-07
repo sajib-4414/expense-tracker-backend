@@ -23,7 +23,6 @@ public class UserRole {
 
     @ManyToOne
     @JsonIgnore
-    @JsonBackReference //reduntant, use in case we dont ignore
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

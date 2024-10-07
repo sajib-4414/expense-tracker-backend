@@ -4,16 +4,20 @@ import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.models.category.Category;
+import com.sajib_4414.expense.tracker.models.expense.Expense;
+import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
 import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.models.income.IncomeRepository;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
 import com.sajib_4414.expense.tracker.payload.IncomeDTO;
+import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
@@ -26,6 +30,7 @@ public class IncomeService {
     private final ModelMapper modelMapper;
     private IncomeRepository incomeRepository;
     private IncomeSourceRepository incomeSourceRepository;
+    private ExpenseRepository expenseRepository;
 
     public List<Income> getMyIncomes() {
         List<Income> incomes = incomeRepository.findByUser(getCurrentUser());
@@ -86,4 +91,23 @@ public class IncomeService {
         return income;
     }
 
+    public OverViewDTO getOverViewData() {
+        //get the sum(income) reported this month
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        Double totalIncomeThisMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),currentMonth).orElse(0.0);
+        //get the total expense reported this month
+        Double totalExpenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth,getCurrentUser().getId());
+        Double netBalance = totalIncomeThisMonth - totalExpenseThisMonth;
+
+        List<Expense> top5 = expenseRepository.getTop5ExpenseOfMonth(currentMonth, getCurrentUser().getId());
+
+        return OverViewDTO.builder()
+                .topExpenseList(top5)
+                .netBalance(netBalance)
+                .totalExpense(totalExpenseThisMonth)
+                .totalIncome(totalIncomeThisMonth)
+                .build();
+
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IncomeRepository extends CrudRepository<Income, Integer> {
     List<Income> findByUser(User user);
@@ -19,4 +20,9 @@ public interface IncomeRepository extends CrudRepository<Income, Integer> {
     @Query(value = "Select i from Income i " +
             "where i.user.id= :user_id and i.id= :incomeId")
     Income findIncomeWithUserAndId(@Param("user_id") int user_id, @Param("incomeId") int incomeId);
+
+    @Query(value = "SELECT sum(amount) FROM income " +
+            "where user_id=:user_id and " +
+            "EXTRACT(MONTH FROM date_time) = :month", nativeQuery = true)
+    Optional<Double> getTotalIncomeOfMonth(@Param("user_id") int user_id, @Param("month") int month);
 }

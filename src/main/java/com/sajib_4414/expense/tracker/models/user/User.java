@@ -47,12 +47,12 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "user",fetch = FetchType.EAGER, cascade = CascadeType.ALL) //mapped by is the entity model's field name
     @Builder.Default
     private Set<UserRole> userRoles = new HashSet<>();
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Category> myCustomCategories;
 
@@ -60,7 +60,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Budget> myBudgets;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<IncomeSource> myIncomeSourceList;
 
@@ -68,12 +68,13 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Income> myIncomes;
 
-    @JsonManagedReference
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenseList;
 
 
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.getRoles().stream()
@@ -81,6 +82,7 @@ public class User implements UserDetails {
                 .collect(Collectors.toList());
     }
 
+    @JsonIgnore
     public Set<Role> getRoles(){
         return userRoles
                 .stream()
@@ -98,11 +100,13 @@ public class User implements UserDetails {
         return username;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -110,8 +114,16 @@ public class User implements UserDetails {
 
 
 
+
+    @JsonIgnore
     @Override
     public boolean isEnabled() {
+        return true;
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 

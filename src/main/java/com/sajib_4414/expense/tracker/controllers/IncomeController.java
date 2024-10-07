@@ -3,6 +3,7 @@ package com.sajib_4414.expense.tracker.controllers;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.payload.IncomeDTO;
+import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import com.sajib_4414.expense.tracker.services.IncomeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -43,6 +44,12 @@ public class IncomeController {
     public ResponseEntity<?> delete(@Valid @PathVariable int id){
         incomeService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/overview")
+    public ResponseEntity<OverViewDTO> getOverView(){
+
+        return ResponseEntity.ok().body(incomeService.getOverViewData());
     }
 
 

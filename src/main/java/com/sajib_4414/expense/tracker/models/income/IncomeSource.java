@@ -27,7 +27,6 @@ public class IncomeSource {
     @JoinColumn(name = "created_by")
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    @JsonBackReference //reduntant, use in case we dont ignore
     private User createdBy;
 
     @Column(name = "name", nullable = false)

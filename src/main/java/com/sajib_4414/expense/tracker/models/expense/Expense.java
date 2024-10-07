@@ -16,6 +16,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.lang.NonNull;
 
+import java.util.Date;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -31,7 +33,6 @@ public class Expense {
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
-    @JsonBackReference //reduntant, use in case we dont ignore
     @JsonIgnore
     private User owner;
 
@@ -41,6 +42,10 @@ public class Expense {
 
     @Column(name = "cost")
     private int cost;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "date_time")
+    private Date dateTime;
 
     @Column(name = "notes", length = 200)
     private String notes;

@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.expense;
 
+import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
@@ -8,12 +9,16 @@ import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.hibernate.NonUniqueResultException;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
+
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -95,6 +100,24 @@ public class ExpenseRepository {
         entityManager.merge(dbRetrievedExpense);
         //automatically updates
         return dbRetrievedExpense;
+    }
+
+    public Double getTotalExpenseOfMonth(int month, int user_id){
+        Query query= entityManager.createNativeQuery("SELECT sum(COALESCE(e_expense.cost, 0)) " +
+                        "FROM e_expense where e_expense.owner_id= :user_id and " +
+                        "EXTRACT(MONTH FROM e_expense.date_time) = :month")
+                .setParameter("month",month)
+                .setParameter("user_id",user_id);
+
+        Object result = query.getSingleResult();
+        return result != null ? ((Number) result).doubleValue() : 0.0;
+    }
+    public List<Expense> getTop5ExpenseOfMonth(int month, int user_id){
+        TypedQuery<Expense> query = entityManager.createQuery( "select e from Expense e where " +
+                "EXTRACT(MONTH FROM e.dateTime) = :month AND e.owner.id=:user_id " +
+                "",Expense.class).setParameter("month",month).setParameter("user_id",user_id)
+                ;
+        return query.getResultList();
     }
 
 //    public Boolean isCategoryOwner(String username, int categoryId) {
