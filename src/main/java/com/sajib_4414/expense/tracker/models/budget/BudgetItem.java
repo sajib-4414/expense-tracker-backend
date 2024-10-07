@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.models.budget;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sajib_4414.expense.tracker.models.BaseEntity;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.user.User;
@@ -18,6 +19,7 @@ import java.util.Objects;
 public class BudgetItem extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -26,6 +28,7 @@ public class BudgetItem extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "budget_id", nullable = false)
+    @JsonIgnore
     private Budget budget;
 
     @Column(name = "max_spend")
