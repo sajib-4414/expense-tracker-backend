@@ -8,6 +8,7 @@ import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
+import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
@@ -22,6 +23,7 @@ import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,12 +35,30 @@ public class ExpenseRepository {
     private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
 
-    public List<Expense> getAllExpenseByUser (String username){
-        return entityManager
-                .createQuery("SELECT e from Expense e JOIN e.owner u" +
-                " WHERE u.username = :username", Expense.class)
+
+    public PagedResponse<Expense> getAllExpenseByUser (String username){
+        return getAllExpenseByUser(username,1,20);
+    }
+
+    public PagedResponse<Expense> getAllExpenseByUser (String username, int page, int size){
+        Long totalElements = entityManager.createQuery(
+                        "SELECT COUNT(e) FROM Expense e JOIN e.owner u WHERE u.username = :username", Long.class)
+                .setParameter("username", username)
+                .getSingleResult();
+
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+
+        //e JOIN e.owner u" +
+        //                " WHERE u.username = :username order by e.dateTime desc
+
+        List<Expense> expenses = entityManager
+                .createQuery("SELECT e from Expense e JOIN FETCH e.owner u WHERE u.username = :username order by e.dateTime desc", Expense.class)
+                .setFirstResult((page - 1) * size)
                 .setParameter("username",username)
+                .setMaxResults(size)
                 .getResultList();
+//        console.log("expenses=",expenses);
+        return new PagedResponse<>(expenses, page, size, totalElements, totalPages);
     }
 
     @Transactional

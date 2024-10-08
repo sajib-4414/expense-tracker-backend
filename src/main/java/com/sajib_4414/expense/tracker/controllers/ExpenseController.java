@@ -2,9 +2,11 @@ package com.sajib_4414.expense.tracker.controllers;
 
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
+import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import com.sajib_4414.expense.tracker.services.ExpenseService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,10 +21,10 @@ public class ExpenseController {
 
     private ExpenseService expenseService;
 
-    @GetMapping("")
-    public ResponseEntity<List<Expense>> getAllMyExpenses(){
+    @GetMapping(value = "",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PagedResponse<Expense>> getAllMyExpenses(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size){
 
-        return ResponseEntity.ok().body(expenseService.getCurrentUserExpense());
+        return ResponseEntity.ok().body(expenseService.getCurrentUserExpense(page,size));
     }
 
     @PostMapping("")

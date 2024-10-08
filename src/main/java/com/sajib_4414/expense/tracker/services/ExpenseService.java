@@ -10,6 +10,7 @@ import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
 import com.sajib_4414.expense.tracker.models.user.Role;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
+import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -32,8 +33,11 @@ public class ExpenseService {
     private ExpenseRepository expenseRepository;
     private CategoryRepository categoryRepository;
 
-    public List<Expense> getCurrentUserExpense(){
-        return expenseRepository.getAllExpenseByUser(getCurrentUser().getUsername());
+
+    @Transactional
+    public PagedResponse<Expense> getCurrentUserExpense(int page, int size){
+        PagedResponse<Expense> pagedResponse =  expenseRepository.getAllExpenseByUser(getCurrentUser().getUsername(), page, size);
+        return pagedResponse;
     }
 
     public Expense createExpense(ExpenseDTO payload) {

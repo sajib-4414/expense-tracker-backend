@@ -82,16 +82,16 @@ public class GlobalErrorHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorHttpResponse> handleAllOtherError(Exception ex) {
-        console.log("Exception happened, here is the detail: "+ex);
-        ErrorDTO error = ErrorDTO.builder().code("unknown_error").message("Unknown error occurred").build();
-        ErrorHttpResponse errorResponse = ErrorHttpResponse
-                .builder()
-                .errors(Collections.singletonList(error))
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<ErrorHttpResponse> handleAllOtherError(Exception ex) {
+//        console.log("Exception happened, here is the detail: "+ex);
+//        ErrorDTO error = ErrorDTO.builder().code("unknown_error").message("Unknown error occurred").build();
+//        ErrorHttpResponse errorResponse = ErrorHttpResponse
+//                .builder()
+//                .errors(Collections.singletonList(error))
+//                .build();
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+//    }
 
     @ExceptionHandler(ItemNotFoundException.class)
     public ResponseEntity<ErrorHttpResponse> handleItemNotFound(ItemNotFoundException ex) {

@@ -49,4 +49,5 @@ public class Expense {
 
     @Column(name = "notes", length = 200)
     private String notes;
+
 }

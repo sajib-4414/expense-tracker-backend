@@ -81,6 +81,9 @@ Automatic Deletion:
 
 After you call remove() on the list, if you persist or merge the parent entity, JPA will automatically delete the childToRemove entity from the database.
 
+#### JSON serialization
+handled by jackson, no annotation of json needed, handled by jackson. but make sure you have 
+getter and setter in the class which you are using for json input, output.
 
 #### JSON serialization problem:
 * use `Jsonignore` if you want to omit some field during serializing json output.
@@ -163,7 +166,8 @@ public class User implements UserDetails {
 ### Miscelleneous problem solve.
 * Primary key is coming like 400,450,500 why?
 _Solve_: use generation strategy=identity in entity model. That will use incremental number.
-* Returning a custom query result as json, how?
+* Returning a custom query result as json, how? also how to solve **constructor** not found when returning json response for custom query.
+
 Solution:
 
     we have a custom result here, to serialize it i have a class also
@@ -186,36 +190,22 @@ public List<CategoryExpense> getTop5CategoryExpenseOfMonth(int month, int user_i
 ```
 
 custom json class look like,
+the below is a pojo class used by jackson, all jackson wants is a 
+ getter setter for all fields. used internally. anytime you want to
+use a class tobe used as json input, output, make sure you have  getter setter.
+but we are also using the class to get data from database where we used the constructor in the query,
+so we need an appropriate constructor as well. Also important thing, data type must match
+in this case. In my case one column from database, the cost column was bigint, i was having int in the 
+categoryresponse class, but it did not work, i had to choose Long which is compatible with
+bigint coming from DB. because of that i was having error **constructor not** found. because we are doing
+**constructor expression** here. 
 ```java
+@Data
+@AllArgsConstructor
 public class CategoryExpense {
     private final int category_id;
     private final String category_name;
     private final Long category_cost;
 
-    @JsonCreator
-    public CategoryExpense(
-            @JsonProperty("category_id") int category_id,
-            @JsonProperty("category_name") String category_name,
-            @JsonProperty("category_cost") Long category_cost
-    ) {
-        this.category_id = category_id;
-        this.category_name = category_name;
-        this.category_cost = category_cost;
-    }
-
-    @JsonProperty("category_id")
-    public int getCategoryId() {
-        return category_id;
-    }
-
-    @JsonProperty("category_name")
-    public String getCategoryName() {
-        return category_name;
-    }
-
-    @JsonProperty("category_cost")
-    public Long getCategoryCost() {
-        return category_cost;
-    }
 }
 ```
