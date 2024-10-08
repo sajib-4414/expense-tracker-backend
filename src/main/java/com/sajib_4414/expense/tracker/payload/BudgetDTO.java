@@ -26,17 +26,17 @@ public class BudgetDTO {
 
     @NotNull(message = "estimatedIncome date is required")
     @Min(value = 1,message = "min 1$ income is required")
-    private int estimatedIncome;
+    private Integer estimatedIncome;
 
 
     @NotNull(message = "maxSpend  is required")
     @Min(value = 1,message = "min 1$ maxSpend is required")
-    private int maxSpend;
+    private Integer maxSpend;
 
 
     @NotNull(message = "warningSpend  is required")
     @Min(value = 1,message = "min 1$ warningSpend is required")
-    private int warningSpend;
+    private Integer warningSpend;
     // Getters and Setters
 }
 

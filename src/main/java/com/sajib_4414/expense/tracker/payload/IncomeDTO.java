@@ -20,7 +20,7 @@ public class IncomeDTO {
 
     @NotNull(message = "amount is required")
     @Min(value = 1,message = "Please provide a valid amount")
-    private int amount;
+    private Integer amount;
 
     @Column(name = "notes")
     private String notes;

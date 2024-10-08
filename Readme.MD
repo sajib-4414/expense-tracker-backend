@@ -85,6 +85,15 @@ After you call remove() on the list, if you persist or merge the parent entity, 
 handled by jackson, no annotation of json needed, handled by jackson. but make sure you have 
 getter and setter in the class which you are using for json input, output.
 
+#### spring data validation
+have your classes use objects wherever possible to trigger the validation
+```java
+@Data
+public class BudgetItemDTO {
+    @NotNull(message = "category_id is required")
+    private Integer category_id;
+```
+if you have `int` here then you cant check empty value
 #### JSON serialization problem:
 * use `Jsonignore` if you want to omit some field during serializing json output.
 * use `@JsonProperty(access = JsonProperty.Access.READ_ONLY)` A read-only property is included in the JSON output (serialization) but ignored during JSON input (deserialization).

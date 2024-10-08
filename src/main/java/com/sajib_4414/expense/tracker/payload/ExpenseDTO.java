@@ -10,11 +10,11 @@ public class ExpenseDTO implements Serializable {
 
     @NotNull(message = "Cost is required")
     @Min(value = 1,message = "Please provide a valid cost")
-    private int cost;
+    private Integer cost;
 
     @NotNull(message = "category is required")
     @Min(value = 1, message = "Please provide a valid category")
-    private int category_id;
+    private Integer category_id;
 
     private String notes;
 
