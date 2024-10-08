@@ -17,17 +17,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "income_source", indexes = @Index(name = "created_by_index",columnList = "created_by"))
+@Table(name = "income_sources", indexes = @Index(name = "created_by_index",columnList = "user"))
 public class IncomeSource {
     @Id
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "user")
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
-    private User createdBy;
+    private User user;
 
     @Column(name = "name", nullable = false)
     @NotEmpty(message = "name cannot be null")

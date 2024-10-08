@@ -88,7 +88,7 @@ public class ExpenseService {
             throw new ItemNotFoundException("Expense not found");
         }
 
-        if(!optionalExpense.get().getOwner().getUsername().equals(getCurrentUser().getUsername())){
+        if(!optionalExpense.get().getUser().getUsername().equals(getCurrentUser().getUsername())){
             throw new PermissionError();
         }
         return optionalExpense.get();

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "e_roles", indexes = @Index(columnList = "name"))
+@Table(name = "roles", indexes = @Index(columnList = "name"))
 public class Role {
 
     @Id

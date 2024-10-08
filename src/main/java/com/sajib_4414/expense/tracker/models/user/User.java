@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name="e_user")
+@Table(name="users")
 public class User implements UserDetails {
 
     @Id
@@ -53,7 +53,7 @@ public class User implements UserDetails {
     private Set<UserRole> userRoles = new HashSet<>();
 
     @JsonIgnore
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Category> myCustomCategories;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -61,7 +61,7 @@ public class User implements UserDetails {
     private Set<Budget> myBudgets;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<IncomeSource> myIncomeSourceList;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -69,7 +69,7 @@ public class User implements UserDetails {
     private Set<Income> myIncomes;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<Expense> expenseList;
 
 

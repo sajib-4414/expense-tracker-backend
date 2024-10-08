@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="e_expense", indexes = @Index(columnList = "owner_id"))
+@Table(name="expenses", indexes = @Index(columnList = "owner_id"))
 public class Expense {
 
     @Id
@@ -32,9 +32,9 @@ public class Expense {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id")
+    @JoinColumn(name = "user_id")
     @JsonIgnore
-    private User owner;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

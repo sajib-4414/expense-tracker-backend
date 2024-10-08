@@ -21,7 +21,7 @@ public interface IncomeRepository extends CrudRepository<Income, Integer> {
             "where i.user.id= :user_id and i.id= :incomeId")
     Income findIncomeWithUserAndId(@Param("user_id") int user_id, @Param("incomeId") int incomeId);
 
-    @Query(value = "SELECT sum(amount) FROM income " +
+    @Query(value = "SELECT sum(amount) FROM incomes " +
             "where user_id=:user_id and " +
             "EXTRACT(MONTH FROM date_time) = :month", nativeQuery = true)
     Optional<Double> getTotalIncomeOfMonth(@Param("user_id") int user_id, @Param("month") int month);

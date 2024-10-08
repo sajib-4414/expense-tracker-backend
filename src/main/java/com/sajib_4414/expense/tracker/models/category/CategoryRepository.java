@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
-    List<Category> findByCreatedByIsNullOrCreatedBy(User user);
+    List<Category> findByUserIsNullOrUser(User user);
 
 
-    @Query(value = "select c from Category c JOIN c.createdBy u where u.id= :userid")
+    @Query(value = "select c from Category c JOIN c.user u where u.id= :userid")
     List<Category> getAllCategoriesByUser(@Param("userid") int userid);
 
     @Query(value = "SELECT CASE WHEN COUNT(c) > 0 THEN TRUE ELSE FALSE END FROM from Category c " +
-            "JOIN c.createdBy u where u.username= :username and c.id= :categoryId")
+            "JOIN c.user u where u.username= :username and c.id= :categoryId")
     Boolean isUserCategoryOwner(@Param("username") String username, @Param("categoryId") int categoryId);
 
-    Optional<Category> findByIdAndCreatedBy(Integer id, User user);
+    Optional<Category> findByIdAndUser(Integer id, User user);
 
 }

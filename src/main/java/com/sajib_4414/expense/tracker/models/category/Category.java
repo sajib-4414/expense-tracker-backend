@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "e_categories", indexes = @Index(columnList = "name"))
+@Table(name = "expense_categories", indexes = @Index(columnList = "name"))
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,9 +26,9 @@ public class Category {
 
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "created_by")
+    @JoinColumn(name = "user_id")
     @JsonBackReference //reduntant, use in case we dont ignore
-    private User createdBy;
+    private User user;
 
     @Column(name = "name",nullable = false, unique = true)
     private String name;

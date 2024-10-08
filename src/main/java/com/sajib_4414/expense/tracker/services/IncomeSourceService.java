@@ -25,12 +25,12 @@ public class IncomeSourceService {
     private IncomeSourceRepository incomeSourceRepository;
 
     public List<IncomeSource> getIncomeSources(){
-        return incomeSourceRepository.findByCreatedByIsNullOrCreatedBy(getCurrentUser());
+        return incomeSourceRepository.findByUserIsNullOrUser(getCurrentUser());
     }
 
     @Transactional
     public IncomeSource create(IncomeSourceDTO payload) {
-        IncomeSource incomeSource = IncomeSource.builder().name(payload.getName()).createdBy(getCurrentUser()).build();
+        IncomeSource incomeSource = IncomeSource.builder().name(payload.getName()).user(getCurrentUser()).build();
         incomeSourceRepository.save(incomeSource);
         return incomeSource;
     }

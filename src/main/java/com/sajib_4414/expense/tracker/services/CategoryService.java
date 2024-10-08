@@ -30,7 +30,7 @@ public class CategoryService {
 
     @Transactional
     public Category create(CategoryCreate payload){
-        Category category = Category.builder().name(payload.getName()).createdBy(getCurrentUser()).build();
+        Category category = Category.builder().name(payload.getName()).user(getCurrentUser()).build();
         categoryRepository.save(category);
         return category;
     }
@@ -43,7 +43,7 @@ public class CategoryService {
 
     //get all categoris that user shuld see = usercategirues+system categories
     public List<Category> getCategories() {
-        return StreamSupport.stream(categoryRepository.findByCreatedByIsNullOrCreatedBy(getCurrentUser()).spliterator(),false)
+        return StreamSupport.stream(categoryRepository.findByUserIsNullOrUser(getCurrentUser()).spliterator(),false)
                 .collect(Collectors.toList());
     }
 

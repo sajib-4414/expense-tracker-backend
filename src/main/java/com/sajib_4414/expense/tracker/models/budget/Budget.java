@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "budget", indexes = @Index(columnList = "user_id, start_date, end_date"))
+@Table(name = "budgets", indexes = @Index(columnList = "user_id, start_date, end_date"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

@@ -10,7 +10,7 @@ import lombok.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "budget_item", indexes = @Index(columnList = "user_id"))
+@Table(name = "budget_items", indexes = @Index(columnList = "user_id"))
 @Data
 @Builder
 @AllArgsConstructor

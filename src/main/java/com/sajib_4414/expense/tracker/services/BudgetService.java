@@ -64,7 +64,7 @@ public class BudgetService {
         BudgetItem budgetItem = new BudgetItem();
         modelMapper.map(payload, budgetItem);
         Budget budget = budgetRepository.findByIdAndUser(budgetId, getCurrentUser()).orElseThrow(()->new ItemNotFoundException("budget not found"));
-        Category category = categoryRepository.findByIdAndCreatedBy(payload.getCategory_id(),getCurrentUser()).orElseThrow(()-> new ItemNotFoundException("category not found"));
+        Category category = categoryRepository.findByIdAndUser(payload.getCategory_id(),getCurrentUser()).orElseThrow(()-> new ItemNotFoundException("category not found"));
         budgetItem.setUser(getCurrentUser());
         budgetItem.setBudget(budget);
         budgetItem.setCategory(category);
@@ -82,7 +82,7 @@ public class BudgetService {
     public BudgetItem updateBudgetItem(BudgetItemDTO payload, int budgetItemId){
         BudgetItem budgetItem = budgetItemRepository.findByIdAndUser(budgetItemId, getCurrentUser());
         modelMapper.map(payload, budgetItem);
-        Category category = categoryRepository.findByIdAndCreatedBy(payload.getCategory_id(),getCurrentUser()).orElseThrow(()-> new ItemNotFoundException("category not found"));
+        Category category = categoryRepository.findByIdAndUser(payload.getCategory_id(),getCurrentUser()).orElseThrow(()-> new ItemNotFoundException("category not found"));
         budgetItem.setCategory(category);
         budgetItemRepository.save(budgetItem);
         return budgetItem;

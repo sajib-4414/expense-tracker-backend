@@ -67,7 +67,7 @@ public class ExpenseRepository {
         Category category = categoryRepository.findById(payload.getCategory_id()).orElseThrow(()-> new ItemNotFoundException("Category not found"));
         Expense expense = Expense
                 .builder()
-                .owner(owner)
+                .user(owner)
                 .notes(payload.getNotes())
                 .cost(payload.getCost())
                 .category(category)
@@ -124,9 +124,9 @@ public class ExpenseRepository {
     }
 
     public Double getTotalExpenseOfMonth(int month, int user_id){
-        Query query= entityManager.createNativeQuery("SELECT sum(COALESCE(e_expense.cost, 0)) " +
-                        "FROM e_expense where e_expense.owner_id= :user_id and " +
-                        "EXTRACT(MONTH FROM e_expense.date_time) = :month")
+        Query query= entityManager.createNativeQuery("SELECT sum(COALESCE(expenses.cost, 0)) " +
+                        "FROM expenses where expenses.user_id= :user_id and " +
+                        "EXTRACT(MONTH FROM expenses.date_time) = :month")
                 .setParameter("month",month)
                 .setParameter("user_id",user_id);
 
