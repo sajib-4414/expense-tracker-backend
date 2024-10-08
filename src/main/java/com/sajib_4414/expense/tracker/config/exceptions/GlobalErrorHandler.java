@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.config.exceptions;
 
+import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.SystemException;
@@ -83,6 +84,7 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorHttpResponse> handleAllOtherError(Exception ex) {
+        console.log("Exception happened, here is the detail: "+ex);
         ErrorDTO error = ErrorDTO.builder().code("unknown_error").message("Unknown error occurred").build();
         ErrorHttpResponse errorResponse = ErrorHttpResponse
                 .builder()

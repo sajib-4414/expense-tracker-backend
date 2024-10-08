@@ -6,6 +6,7 @@ import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
+import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -112,11 +113,19 @@ public class ExpenseRepository {
         Object result = query.getSingleResult();
         return result != null ? ((Number) result).doubleValue() : 0.0;
     }
-    public List<Expense> getTop5ExpenseOfMonth(int month, int user_id){
-        TypedQuery<Expense> query = entityManager.createQuery( "select e from Expense e where " +
-                "EXTRACT(MONTH FROM e.dateTime) = :month AND e.owner.id=:user_id " +
-                "",Expense.class).setParameter("month",month).setParameter("user_id",user_id)
-                ;
+    public List<CategoryExpense> getTop5CategoryExpenseOfMonth(int month, int user_id){
+        TypedQuery<CategoryExpense> query = entityManager.createQuery(
+                "select new com.sajib_4414.expense.tracker.payload.CategoryExpense(ec.id, ec.name, sum(ex.cost)) " +
+                        "from Expense ex LEFT JOIN ex.category ec " +
+                        "where ex.owner.id = :user_id " +
+                        "and EXTRACT(month from ex.dateTime) = :month " +
+                        "group by ec.id order by sum(ex.cost) desc",
+                CategoryExpense.class
+        );
+        query.setParameter("user_id", user_id);
+        query.setParameter("month", month);
+        query.setMaxResults(5);
+
         return query.getResultList();
     }
 

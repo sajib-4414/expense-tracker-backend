@@ -10,6 +10,7 @@ import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.models.income.IncomeRepository;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
+import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.IncomeDTO;
 import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import lombok.AllArgsConstructor;
@@ -100,10 +101,10 @@ public class IncomeService {
         Double totalExpenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth,getCurrentUser().getId());
         Double netBalance = totalIncomeThisMonth - totalExpenseThisMonth;
 
-        List<Expense> top5 = expenseRepository.getTop5ExpenseOfMonth(currentMonth, getCurrentUser().getId());
+        List<CategoryExpense> top5 = expenseRepository.getTop5CategoryExpenseOfMonth(currentMonth, getCurrentUser().getId());
 
         return OverViewDTO.builder()
-                .topExpenseList(top5)
+                .topCategoryExpense(top5)
                 .netBalance(netBalance)
                 .totalExpense(totalExpenseThisMonth)
                 .totalIncome(totalIncomeThisMonth)

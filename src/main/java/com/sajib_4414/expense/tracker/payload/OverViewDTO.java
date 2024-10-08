@@ -12,6 +12,6 @@ public class OverViewDTO {
     private Double totalIncome;
     private Double totalExpense;
     private Double netBalance;
-    private List<Expense> topExpenseList;
+    private List<CategoryExpense> topCategoryExpense;
 
 }

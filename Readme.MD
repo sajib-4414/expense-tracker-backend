@@ -163,3 +163,59 @@ public class User implements UserDetails {
 ### Miscelleneous problem solve.
 * Primary key is coming like 400,450,500 why?
 _Solve_: use generation strategy=identity in entity model. That will use incremental number.
+* Returning a custom query result as json, how?
+Solution:
+
+    we have a custom result here, to serialize it i have a class also
+```java
+public List<CategoryExpense> getTop5CategoryExpenseOfMonth(int month, int user_id){
+        TypedQuery<CategoryExpense> query = entityManager.createQuery(
+                "select new com.sajib_4414.expense.tracker.payload.CategoryExpense(ec.id, ec.name, sum(ex.cost)) " +
+                        "from Expense ex LEFT JOIN ex.category ec " +
+                        "where ex.owner.id = :user_id " +
+                        "and EXTRACT(month from ex.dateTime) = :month " +
+                        "group by ec.id order by sum(ex.cost) desc",
+                CategoryExpense.class
+        );
+        query.setParameter("user_id", user_id);
+        query.setParameter("month", month);
+        query.setMaxResults(5);
+
+        return query.getResultList();
+    }
+```
+
+custom json class look like,
+```java
+public class CategoryExpense {
+    private final int category_id;
+    private final String category_name;
+    private final Long category_cost;
+
+    @JsonCreator
+    public CategoryExpense(
+            @JsonProperty("category_id") int category_id,
+            @JsonProperty("category_name") String category_name,
+            @JsonProperty("category_cost") Long category_cost
+    ) {
+        this.category_id = category_id;
+        this.category_name = category_name;
+        this.category_cost = category_cost;
+    }
+
+    @JsonProperty("category_id")
+    public int getCategoryId() {
+        return category_id;
+    }
+
+    @JsonProperty("category_name")
+    public String getCategoryName() {
+        return category_name;
+    }
+
+    @JsonProperty("category_cost")
+    public Long getCategoryCost() {
+        return category_cost;
+    }
+}
+```
