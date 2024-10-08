@@ -3,6 +3,7 @@ package com.sajib_4414.expense.tracker.controllers;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.payload.IncomeDTO;
+import com.sajib_4414.expense.tracker.payload.IncomeSummaryDTO;
 import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import com.sajib_4414.expense.tracker.services.IncomeService;
 import jakarta.validation.Valid;
@@ -50,6 +51,12 @@ public class IncomeController {
     public ResponseEntity<OverViewDTO> getOverView(){
 
         return ResponseEntity.ok().body(incomeService.getOverViewData());
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<IncomeSummaryDTO> getIncomeSummary(){
+
+        return ResponseEntity.ok().body(incomeService.getIncomeSummary());
     }
 
 

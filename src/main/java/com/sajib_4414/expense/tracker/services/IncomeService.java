@@ -3,6 +3,7 @@ package com.sajib_4414.expense.tracker.services;
 import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
+import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
@@ -12,6 +13,7 @@ import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
 import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.IncomeDTO;
+import com.sajib_4414.expense.tracker.payload.IncomeSummaryDTO;
 import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,6 +34,7 @@ public class IncomeService {
     private IncomeRepository incomeRepository;
     private IncomeSourceRepository incomeSourceRepository;
     private ExpenseRepository expenseRepository;
+    private BudgetRepository budgetRepository;
 
     public List<Income> getMyIncomes() {
         List<Income> incomes = incomeRepository.findByUser(getCurrentUser());
@@ -109,6 +112,21 @@ public class IncomeService {
                 .totalExpense(totalExpenseThisMonth)
                 .totalIncome(totalIncomeThisMonth)
                 .build();
+
+    }
+
+    public IncomeSummaryDTO getIncomeSummary() {
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int lastMonth = (currentDate.getMonthValue()-1)==0 ? 12:currentDate.getMonthValue()-1;
+        //get total income this month
+        Double incomeThisMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),currentMonth).orElse(0.0);
+        //get total income last month
+        Double incomeLastMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),lastMonth).orElse(0.0);
+        //get estimated income from the budget's of this month, eventually we will allow one budget only per month
+        Double budgetedIncomeThisMonth = budgetRepository.find
+        //get incomes total by income source
+
 
     }
 }
