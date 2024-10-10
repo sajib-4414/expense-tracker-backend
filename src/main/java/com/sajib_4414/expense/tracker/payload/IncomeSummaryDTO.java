@@ -10,6 +10,6 @@ import java.util.List;
 public class IncomeSummaryDTO {
     private Double totalIncomeThisMonth;
     private Double totalIncomeLastMonth;
-    private Double budgetedIncomeThisMonth;
-    private List<IncomeByIncomeSource> incomeListBySource;
+    private Integer budgetedIncomeThisMonth;
+    private List<IncomeByIncomeSourceDTO> incomeListBySource;
 }

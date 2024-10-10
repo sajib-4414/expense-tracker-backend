@@ -42,7 +42,7 @@ public class ExpenseRepository {
 
     public PagedResponse<Expense> getAllExpenseByUser (String username, int page, int size){
         Long totalElements = entityManager.createQuery(
-                        "SELECT COUNT(e) FROM Expense e JOIN e.owner u WHERE u.username = :username", Long.class)
+                        "SELECT COUNT(e) FROM Expense e JOIN e.user u WHERE u.username = :username", Long.class)
                 .setParameter("username", username)
                 .getSingleResult();
 
@@ -137,7 +137,7 @@ public class ExpenseRepository {
         TypedQuery<CategoryExpense> query = entityManager.createQuery(
                 "select new com.sajib_4414.expense.tracker.payload.CategoryExpense(ec.id, ec.name, sum(ex.cost)) " +
                         "from Expense ex LEFT JOIN ex.category ec " +
-                        "where ex.owner.id = :user_id " +
+                        "where ex.user.id = :user_id " +
                         "and EXTRACT(month from ex.dateTime) = :month " +
                         "group by ec.id order by sum(ex.cost) desc",
                 CategoryExpense.class

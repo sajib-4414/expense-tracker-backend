@@ -218,3 +218,11 @@ public class CategoryExpense {
 
 }
 ```
+
+
+## Java learning TODO
+* stream methods, map, filter
+* query dsl
+* rabbitmq using/ spring boot own mq 
+* spring cloud
+* JTA

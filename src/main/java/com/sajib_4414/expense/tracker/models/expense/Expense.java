@@ -23,7 +23,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="expenses", indexes = @Index(columnList = "owner_id"))
+@Table(name="expenses", indexes = @Index(columnList = "user_id"))
 public class Expense {
 
     @Id

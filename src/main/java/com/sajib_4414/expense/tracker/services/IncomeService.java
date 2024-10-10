@@ -3,6 +3,7 @@ package com.sajib_4414.expense.tracker.services;
 import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
+import com.sajib_4414.expense.tracker.models.budget.Budget;
 import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
@@ -11,10 +12,7 @@ import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.models.income.IncomeRepository;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
-import com.sajib_4414.expense.tracker.payload.CategoryExpense;
-import com.sajib_4414.expense.tracker.payload.IncomeDTO;
-import com.sajib_4414.expense.tracker.payload.IncomeSummaryDTO;
-import com.sajib_4414.expense.tracker.payload.OverViewDTO;
+import com.sajib_4414.expense.tracker.payload.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -124,9 +122,20 @@ public class IncomeService {
         //get total income last month
         Double incomeLastMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),lastMonth).orElse(0.0);
         //get estimated income from the budget's of this month, eventually we will allow one budget only per month
-        Double budgetedIncomeThisMonth = budgetRepository.find
-        //get incomes total by income source
+        Budget budgetOfMonth = budgetRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
+        Integer budgetedIncome = -1;
+        if(budgetOfMonth !=null)
+            budgetedIncome  = budgetOfMonth.getEstimatedIncome();
 
+        //get incomes total by income source
+        List<IncomeByIncomeSourceDTO> income_by_source = incomeRepository.getIncomeByIncomeSource();
+        return IncomeSummaryDTO
+                .builder()
+                .incomeListBySource(income_by_source)
+                .totalIncomeLastMonth(incomeLastMonth)
+                .budgetedIncomeThisMonth(budgetedIncome)
+                .totalIncomeThisMonth(incomeThisMonth)
+                .build();
 
     }
 }
