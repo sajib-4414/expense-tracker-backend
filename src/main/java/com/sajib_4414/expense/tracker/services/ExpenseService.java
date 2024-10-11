@@ -4,6 +4,7 @@ import com.sajib_4414.expense.tracker.config.Roles;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.models.budget.Budget;
+import com.sajib_4414.expense.tracker.models.budget.BudgetQRepository;
 import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
@@ -13,6 +14,7 @@ import com.sajib_4414.expense.tracker.models.user.Role;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
+import com.sajib_4414.expense.tracker.payload.ExpenseSummaryDTO;
 import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -36,7 +38,7 @@ import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 public class ExpenseService {
     private ExpenseRepository expenseRepository;
     private CategoryRepository categoryRepository;
-    private BudgetRepository budgetRepository;
+    private BudgetQRepository budgetQRepository;
 
 
     @Transactional
@@ -112,12 +114,23 @@ public class ExpenseService {
     }
 
 
-    public List<CategoryExpense> getExpenseSummaryView() {
+    public ExpenseSummaryDTO getExpenseSummaryView() {
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonthValue();
         Double expenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth, getCurrentUser().getId());
-        Budget budgetOfMonth = budgetRepository.getBudgetWithItems()
+        int lastMonth = (currentDate.getMonthValue()-1)==0 ? 12:currentDate.getMonthValue()-1;
+        Double expenseLastMonth = expenseRepository.getTotalExpenseOfMonth(lastMonth, getCurrentUser().getId());
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(), currentMonth);
 
-        return expenseRepository.getExpenseListOfMonthByCategory(currentMonth, getCurrentUser().getId());
+        Integer budgetedCost = budgetOfMonth!=null ? budgetOfMonth.getMaxSpend():0;
+        List<CategoryExpense> categoryWiseSpent = expenseRepository.getExpenseListOfMonthByCategory(currentMonth, getCurrentUser().getId());
+
+
+        return ExpenseSummaryDTO.builder()
+                .totalExpenseThisMonth(expenseThisMonth)
+                .budgetedExpenseThisMonth(budgetedCost)
+                .categoryWiseExpense(categoryWiseSpent)
+                .totalExpenseLastMonth(expenseLastMonth)
+                .build();
     }
 }
