@@ -26,6 +26,7 @@ public class IncomeDTO {
     private String notes;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @NotNull(message = "Date is required")
     private Date dateTime;
 
     @NotNull(message = "incomeSource is required")

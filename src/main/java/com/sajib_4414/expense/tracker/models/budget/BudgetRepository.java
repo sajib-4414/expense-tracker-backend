@@ -8,13 +8,13 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface BudgetRepository extends CrudRepository<Budget, Integer> {
+public interface BudgetRepository extends CrudRepository<Budget, Integer>{
     public List<Budget> findByUser(User user);
     Optional<Budget> findByIdAndUser(Integer id, User user);
 
     @Query("select b from Budget b LEFT JOIN FETCH b.budgetItemList where b.id=:budgetId and b.user.id=:userId")
     Budget getBudgetWithItems(@Param("budgetId") int budgetId, @Param("userId") int userId);
 
-    @Query("SELECT b from Budget b where b.user.id=:user_id and EXTRACT(MONTH from b.startDate)=:month")
-    Budget getBudgetOfMonth(@Param("user_id") Integer user_id, @Param("month") int month);
+//    @Query("SELECT b from Budget b where b.user.id=:user_id and EXTRACT(MONTH from b.startDate)=:month")
+//    Budget getBudgetOfMonth(@Param("user_id") Integer user_id, @Param("month") int month);
 }

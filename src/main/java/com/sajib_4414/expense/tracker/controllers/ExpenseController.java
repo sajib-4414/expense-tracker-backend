@@ -1,6 +1,7 @@
 package com.sajib_4414.expense.tracker.controllers;
 
 import com.sajib_4414.expense.tracker.models.expense.Expense;
+import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import com.sajib_4414.expense.tracker.services.ExpenseService;
@@ -55,4 +56,9 @@ public class ExpenseController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @GetMapping("/summary")
+    public ResponseEntity<List<CategoryExpense>> getExpenseSummaryByMonth(){
+        return ResponseEntity.ok().body(expenseService.getExpenseSummaryView());
+    }
 }

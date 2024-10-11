@@ -1,9 +1,14 @@
 package com.sajib_4414.expense.tracker.models.expense;
 
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
+import com.sajib_4414.expense.tracker.models.category.QCategory;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.CategoryExpense;
@@ -34,6 +39,7 @@ public class ExpenseRepository {
     private UserRepository userRepository;
     private CategoryRepository categoryRepository;
     private ModelMapper modelMapper;
+    private JPAQueryFactory queryFactory;
 
 
     public PagedResponse<Expense> getAllExpenseByUser (String username){
@@ -52,7 +58,7 @@ public class ExpenseRepository {
         //                " WHERE u.username = :username order by e.dateTime desc
 
         List<Expense> expenses = entityManager
-                .createQuery("SELECT e from Expense e JOIN FETCH e.owner u WHERE u.username = :username order by e.dateTime desc", Expense.class)
+                .createQuery("SELECT e from Expense e JOIN FETCH e.user u WHERE u.username = :username order by e.dateTime desc", Expense.class)
                 .setFirstResult((page - 1) * size)
                 .setParameter("username",username)
                 .setMaxResults(size)
@@ -69,6 +75,7 @@ public class ExpenseRepository {
                 .builder()
                 .user(owner)
                 .notes(payload.getNotes())
+                .dateTime(payload.getDateTime())
                 .cost(payload.getCost())
                 .category(category)
                 .build();
@@ -147,6 +154,28 @@ public class ExpenseRepository {
         query.setMaxResults(5);
 
         return query.getResultList();
+    }
+
+    public List<CategoryExpense> getExpenseListOfMonthByCategory(int month, int user_id){
+        QExpense qExpense = QExpense.expense;
+        QCategory qCategory = QCategory.category;
+
+        //same query as above but with a querydsl way
+        List<CategoryExpense> results = queryFactory
+                .select(Projections.constructor(CategoryExpense.class,
+                        qCategory.id,
+                        qCategory.name,
+                        qExpense.cost.sum().longValue()))
+                .from(qExpense)
+                .leftJoin(qCategory).on(qExpense.category.id.eq(qCategory.id))
+                .where(
+                        qExpense.user.id.eq(user_id)
+                                .and(qExpense.dateTime.month().eq(month))
+                )
+                .groupBy(qCategory.id)
+                .orderBy(qExpense.cost.sum().longValue().asc())
+                .fetch();
+        return results;
     }
 
 //    public Boolean isCategoryOwner(String username, int categoryId) {

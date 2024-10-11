@@ -4,6 +4,7 @@ import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.models.budget.Budget;
+import com.sajib_4414.expense.tracker.models.budget.BudgetQRepository;
 import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
@@ -32,6 +33,7 @@ public class IncomeService {
     private IncomeRepository incomeRepository;
     private IncomeSourceRepository incomeSourceRepository;
     private ExpenseRepository expenseRepository;
+    private BudgetQRepository budgetQRepository;
     private BudgetRepository budgetRepository;
 
     public List<Income> getMyIncomes() {
@@ -122,7 +124,7 @@ public class IncomeService {
         //get total income last month
         Double incomeLastMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),lastMonth).orElse(0.0);
         //get estimated income from the budget's of this month, eventually we will allow one budget only per month
-        Budget budgetOfMonth = budgetRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
         Integer budgetedIncome = -1;
         if(budgetOfMonth !=null)
             budgetedIncome  = budgetOfMonth.getEstimatedIncome();

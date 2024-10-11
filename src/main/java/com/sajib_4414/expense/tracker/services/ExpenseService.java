@@ -3,12 +3,15 @@ package com.sajib_4414.expense.tracker.services;
 import com.sajib_4414.expense.tracker.config.Roles;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
+import com.sajib_4414.expense.tracker.models.budget.Budget;
+import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
 import com.sajib_4414.expense.tracker.models.user.Role;
 import com.sajib_4414.expense.tracker.models.user.User;
+import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
 import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import jakarta.transaction.Transactional;
@@ -20,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +36,7 @@ import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 public class ExpenseService {
     private ExpenseRepository expenseRepository;
     private CategoryRepository categoryRepository;
+    private BudgetRepository budgetRepository;
 
 
     @Transactional
@@ -107,4 +112,12 @@ public class ExpenseService {
     }
 
 
+    public List<CategoryExpense> getExpenseSummaryView() {
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        Double expenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth, getCurrentUser().getId());
+        Budget budgetOfMonth = budgetRepository.getBudgetWithItems()
+
+        return expenseRepository.getExpenseListOfMonthByCategory(currentMonth, getCurrentUser().getId());
+    }
 }
