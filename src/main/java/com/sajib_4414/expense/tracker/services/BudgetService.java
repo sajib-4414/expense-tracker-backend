@@ -2,19 +2,20 @@ package com.sajib_4414.expense.tracker.services;
 
 import com.sajib_4414.expense.tracker.config.console;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
-import com.sajib_4414.expense.tracker.models.budget.Budget;
-import com.sajib_4414.expense.tracker.models.budget.BudgetItem;
-import com.sajib_4414.expense.tracker.models.budget.BudgetItemRepository;
-import com.sajib_4414.expense.tracker.models.budget.BudgetRepository;
+import com.sajib_4414.expense.tracker.models.budget.*;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
+import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
 import com.sajib_4414.expense.tracker.payload.BudgetDTO;
 import com.sajib_4414.expense.tracker.payload.BudgetItemDTO;
+import com.sajib_4414.expense.tracker.payload.BudgetSummaryBoardDTO;
+import com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +25,10 @@ import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 @AllArgsConstructor
 public class BudgetService {
     private final BudgetRepository budgetRepository;
+    private final BudgetQRepository budgetQRepository;
     private final BudgetItemRepository budgetItemRepository;
     private final CategoryRepository categoryRepository;
+    private final ExpenseRepository expenseRepository;
     private ModelMapper modelMapper;
 
     @Transactional
@@ -103,5 +106,28 @@ public class BudgetService {
         if(budget == null)
             throw new ItemNotFoundException("budget not found");
         return budget;
+    }
+
+    public BudgetSummaryBoardDTO getMyBudgetSummary() {
+        //need the budget of the month
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
+        var summary = BudgetSummaryBoardDTO.builder();
+        //check maxspend
+        summary.budget(budgetOfMonth);
+        //get all expense of this month
+        Double totalSpent = expenseRepository.getTotalExpenseOfMonth(currentMonth, getCurrentUser().getId());
+        summary.total_spent(totalSpent);
+        // how many categories = how many budget items associated with this budget, so nothing new retireval
+        //budget breakdown part
+        List<CategoryWiseBudgetSummary> summaryList = budgetQRepository.getBudgetSummaryList(getCurrentUser().getId(),budgetOfMonth.getId(),currentMonth);
+        console.log(summaryList);
+        summary.category_wise_budget_summary(summaryList);
+        //get list of all budget items of this budget
+        //for each item get the category
+        //for each category find the cost with this category in this month
+        return summary.build();
+//        return null;
     }
 }

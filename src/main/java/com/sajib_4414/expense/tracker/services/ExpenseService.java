@@ -49,9 +49,13 @@ public class ExpenseService {
 
     public Expense createExpense(ExpenseDTO payload) {
 
+        User currentUser = getCurrentUser();
+        if(payload.getCategory_id() ==null){
+            return expenseRepository.createExpenseForUser(currentUser.getUsername(), payload);
+        }
         //check if the user is admin, then allow creating expense in any categories, although admin wont do that ever.
         //if not admin, check if thats the category he has access to.
-        User currentUser = getCurrentUser();
+
         Collection<? extends GrantedAuthority> authorities = getCurrentUser().getAuthorities();
         List<GrantedAuthority> userAuthorities = new ArrayList<>(authorities);
 
@@ -63,6 +67,7 @@ public class ExpenseService {
         else{
             //check if he own the category
             //check if we can get any category with his username
+
             Boolean isOwner = categoryRepository.isUserCategoryOwner( currentUser.getUsername(), payload.getCategory_id());
             if(isOwner)
                 return expenseRepository.createExpenseForUser(currentUser.getUsername(), payload);

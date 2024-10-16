@@ -5,6 +5,7 @@ import com.sajib_4414.expense.tracker.models.budget.Budget;
 import com.sajib_4414.expense.tracker.models.budget.BudgetItem;
 import com.sajib_4414.expense.tracker.payload.BudgetDTO;
 import com.sajib_4414.expense.tracker.payload.BudgetItemDTO;
+import com.sajib_4414.expense.tracker.payload.BudgetSummaryBoardDTO;
 import com.sajib_4414.expense.tracker.services.BudgetService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -80,5 +81,12 @@ public class BudgetController {
 
         budgetService.deleteBudgetItem(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/summary")
+    public ResponseEntity<BudgetSummaryBoardDTO> getBudgetBoardSummary() {
+        ;
+        return ResponseEntity.ok().body(budgetService.getMyBudgetSummary());
     }
 }

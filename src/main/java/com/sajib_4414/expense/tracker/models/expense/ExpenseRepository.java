@@ -70,7 +70,9 @@ public class ExpenseRepository {
     @Transactional
     public Expense createExpenseForUser(String username, ExpenseDTO payload) {
         User owner = userRepository.findByUsername(username).orElseThrow(()-> new ItemNotFoundException("User not found"));
-        Category category = categoryRepository.findById(payload.getCategory_id()).orElseThrow(()-> new ItemNotFoundException("Category not found"));
+        Category category=null;
+        if(payload.getCategory_id() !=null)
+            category = categoryRepository.findById(payload.getCategory_id()).orElseThrow(()-> new ItemNotFoundException("Category not found"));
         Expense expense = Expense
                 .builder()
                 .user(owner)

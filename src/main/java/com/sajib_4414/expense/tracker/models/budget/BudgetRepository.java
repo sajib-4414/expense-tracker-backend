@@ -1,6 +1,7 @@
 package com.sajib_4414.expense.tracker.models.budget;
 
 import com.sajib_4414.expense.tracker.models.user.User;
+import com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,8 +15,4 @@ public interface BudgetRepository extends CrudRepository<Budget, Integer>{
 
     @Query("select b from Budget b LEFT JOIN FETCH b.budgetItemList where b.id=:budgetId and b.user.id=:userId")
     Budget getBudgetWithItems(@Param("budgetId") int budgetId, @Param("userId") int userId);
-
-    //this is now in budget q repostiroty
-//    @Query("SELECT b from Budget b where b.user.id=:user_id and EXTRACT(MONTH from b.startDate)=:month")
-//    Budget getBudgetOfMonth(@Param("user_id") Integer user_id, @Param("month") int month);
 }

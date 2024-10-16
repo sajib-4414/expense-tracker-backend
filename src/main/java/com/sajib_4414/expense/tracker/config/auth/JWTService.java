@@ -46,11 +46,12 @@ public class JWTService {
     }
 
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails){
+        int expiryInMinutes = 60;
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
+                .setExpiration(new Date(System.currentTimeMillis()+((1000*60)*expiryInMinutes))) //1000milis, 60s
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
