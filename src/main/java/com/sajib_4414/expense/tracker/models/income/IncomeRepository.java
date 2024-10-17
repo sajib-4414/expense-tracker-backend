@@ -26,6 +26,11 @@ public interface IncomeRepository extends CrudRepository<Income, Integer> {
             "where user_id=:user_id and " +
             "EXTRACT(MONTH FROM date_time) = :month", nativeQuery = true)
     Optional<Double> getTotalIncomeOfMonth(@Param("user_id") int user_id, @Param("month") int month);
+
+    @Query(value = "SELECT sum(amount) FROM incomes " +
+            "where user_id=:user_id and " +
+            "EXTRACT(MONTH FROM date_time) = :month and EXTRACT(YEAR FROM date_time)= :year", nativeQuery = true)
+    Optional<Double> getTotalIncomeOfMonthAndYear(@Param("user_id") int user_id, @Param("month") int month, @Param("year") int year);
     //
 
     @Query("select new com.sajib_4414.expense.tracker.payload.IncomeByIncomeSourceDTO(sum(i.amount)  as income_total, " +

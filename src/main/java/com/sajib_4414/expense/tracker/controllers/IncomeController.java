@@ -24,8 +24,10 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @GetMapping
-    public ResponseEntity<List<Income>> getMyIncomes(){
+    public ResponseEntity<List<Income>> getMyIncomes(@RequestParam() int month, @RequestParam() int year){
 
+        //month defaults to current month if not given
+        //year defaults to current year if not given
         return ResponseEntity.ok().body(incomeService.getMyIncomes());
     }
 

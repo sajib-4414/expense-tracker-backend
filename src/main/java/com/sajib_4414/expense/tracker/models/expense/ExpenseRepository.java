@@ -144,7 +144,8 @@ public class ExpenseRepository {
     }
     public List<CategoryExpense> getTop5CategoryExpenseOfMonth(int month, int user_id){
         TypedQuery<CategoryExpense> query = entityManager.createQuery(
-                "select new com.sajib_4414.expense.tracker.payload.CategoryExpense(ec.id, ec.name, sum(ex.cost)) " +
+                "select new com.sajib_4414.expense.tracker.payload.CategoryExpense(" +
+                        "case when ec.id is NULL then 0 else ec.id end, case when ec.name is NULL then 'Undefined' else ec.name end, coalesce(sum(ex.cost),0)) " +
                         "from Expense ex LEFT JOIN ex.category ec " +
                         "where ex.user.id = :user_id " +
                         "and EXTRACT(month from ex.dateTime) = :month " +

@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

@@ -24,7 +24,7 @@ public class IncomeSource {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnore
     private User user;
