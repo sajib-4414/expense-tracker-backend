@@ -3,6 +3,8 @@ package com.sajib_4414.expense.tracker.models.category;
 import com.sajib_4414.expense.tracker.models.budget.Budget;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.payload.CategoryCreate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoryRepository extends CrudRepository<Category, Integer> {
-    List<Category> findByUserIsNullOrUser(User user);
+    Page<Category> findByUserIsNullOrUser(final Pageable pageable, User user);
 
 
     @Query(value = "select c from Category c JOIN c.user u where u.id= :userid")

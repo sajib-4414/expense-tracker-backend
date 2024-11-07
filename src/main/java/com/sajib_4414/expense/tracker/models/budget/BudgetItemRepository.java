@@ -14,5 +14,7 @@ public interface BudgetItemRepository extends CrudRepository<BudgetItem, Integer
 
     BudgetItem findByIdAndUser(Integer id, User user);
 
+    BudgetItem findByCategoryAndBudgetAndUser(Category category, Budget budget, User user);
+
 
 }

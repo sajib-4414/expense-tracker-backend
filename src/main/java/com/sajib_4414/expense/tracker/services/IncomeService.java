@@ -16,6 +16,8 @@ import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
 import com.sajib_4414.expense.tracker.payload.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +38,13 @@ public class IncomeService {
     private BudgetQRepository budgetQRepository;
     private BudgetRepository budgetRepository;
 
-    public List<Income> getMyIncomes() {
-        List<Income> incomes = incomeRepository.findByUser(getCurrentUser());
+    public Page<Income> getMyIncomes() {
+        Page<Income> incomes = incomeRepository.findByUser(PageRequest.of(0, 5), getCurrentUser());
+        return incomes;
+    }
+
+    public Page<Income> getMyIncomesOfTime(Integer month, Integer year) {
+        Page<Income> incomes = incomeRepository.getAllIncomeOfMonthAndYear(PageRequest.of(0, 5), getCurrentUser().getId(), month,year).orElseThrow(()->new ItemNotFoundException("No income found"));
         return incomes;
     }
 

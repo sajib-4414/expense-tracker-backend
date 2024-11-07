@@ -14,14 +14,9 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BudgetDTO {
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @NotNull(message = "start date is required")
-    private Date startDate;
-
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    @NotNull(message = "end date is required")
-    private Date endDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "budget_period  is required")
+    private Date budget_period;
 
 
     @NotNull(message = "estimatedIncome date is required")

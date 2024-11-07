@@ -1,6 +1,7 @@
 package com.sajib_4414.expense.tracker.config.exceptions;
 
 import com.sajib_4414.expense.tracker.config.console;
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.BadDataException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.SystemException;
@@ -72,15 +73,15 @@ public class GlobalErrorHandler {
 
 
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ErrorHttpResponse> handleDuplicateEntry(DataIntegrityViolationException ex) {
-        ErrorDTO error = ErrorDTO.builder().code("data_error").message("Duplicate data or other error").build();
-        ErrorHttpResponse errorResponse = ErrorHttpResponse
-                .builder()
-                .errors(Collections.singletonList(error))
-                .build();
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
-    }
+//    @ExceptionHandler(DataIntegrityViolationException.class)
+//    public ResponseEntity<ErrorHttpResponse> handleDuplicateEntry(DataIntegrityViolationException ex) {
+//        ErrorDTO error = ErrorDTO.builder().code("data_error").message("Duplicate data or other error").build();
+//        ErrorHttpResponse errorResponse = ErrorHttpResponse
+//                .builder()
+//                .errors(Collections.singletonList(error))
+//                .build();
+//        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+//    }
 
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<ErrorHttpResponse> handleAllOtherError(Exception ex) {
@@ -112,6 +113,17 @@ public class GlobalErrorHandler {
                 .build();
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
+
+    @ExceptionHandler(BadDataException.class)
+    public ResponseEntity<ErrorHttpResponse> handlebadDataError(BadDataException ex) {
+        ErrorDTO error = ErrorDTO.builder().code(ex.getCode()).message(ex.getMessage()).build();
+        ErrorHttpResponse errorResponse = ErrorHttpResponse
+                .builder()
+                .errors(Collections.singletonList(error))
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorHttpResponse> handlePermissionError(NoResourceFoundException ex) {
         ErrorDTO error = ErrorDTO.builder().code("invalid_resouce").message("invalid_resouce").build();

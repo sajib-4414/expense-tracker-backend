@@ -38,7 +38,7 @@ public class BudgetQRepoImpl implements BudgetQRepository{
         return queryFactory.selectFrom(budget)
                 .where(
                         budget.user.id.eq(user_id)
-                       .and(budget.startDate.month().eq(month))
+                       .and(budget.budgetPeriod.month().eq(month))
                 ).fetchOne();
 
     }
@@ -78,33 +78,60 @@ where (budget_items.budget_id=2 or budget_items.budget_id is NULL)
 group by budget_items.id,expense_category_id,expense_categtory_name
          */
         Query query = entityManager.createQuery("SELECT new com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary(" +
-                "case when bi.id is NULL then 0 ELSE bi.id end " +
-                ", case when bi.maxSpend is NULL then 0 else bi.maxSpend end" +
-                ", case when bi.warningSpend is NULL then 0 else bi.warningSpend end, " +
-                "COALESCE(SUM(ec.expenseCost), 0)," +
-                " CASE WHEN ec.expenseCategoryId IS NULL THEN 0 ELSE ec.expenseCategoryId END, " +
-                "CASE WHEN ec.expenseCategoryName IS NULL THEN 'Undefined' ELSE ec.expenseCategoryName END  ) " +
+                " bi.id as budget_item_id,bi.maxSpend,bi.warningSpend, " +
+                "bi.category.id,ec.name as category_name, coalesce(total,0) as total_expense ) " +
                 "from BudgetItem bi " +
-                "FULL OUTER JOIN (SELECT ex.cost AS expenseCost, ct.id AS expenseCategoryId, ct.name AS expenseCategoryName " +
-                "FROM Expense ex FULL OUTER JOIN Category ct ON ex.category.id = ct.id " +
-                "WHERE " +
-                "(ex.user.id = :userId or ex.user.id is NULL)" +
-                "and " +
-                "( EXTRACT(month from ex.dateTime) = :month OR ex.dateTime is NULL)" +
-                "and " +
-                "( ct.user.id= :userId or ct.user.id is NULL)" +
-                ") ec " +
-                "ON bi.category.id = ec.expenseCategoryId " +
-                "WHERE (bi.budget.id = :budgetId OR bi.budget.id IS NULL) " +
-                "and (bi.maxSpend is not null or ec.expenseCategoryName is null) " +
-                "GROUP BY bi.id, ec.expenseCategoryId, ec.expenseCategoryName", CategoryWiseBudgetSummary.class);
+                "left join " +
+                " (select sum(ex.cost) as total, ex.category.id as expense_category_id from " +
+                " Expense ex" +
+                " where ex.user.id=:userId and extract(month from ex.dateTime)=:month\n" +
+                " group by ex.category.id) as total_expense_table " +
+
+                "on bi.category.id=expense_category_id " +
+                "left join Category ec " +
+                "on bi.category.id= ec.id " +
+                "where bi.budget.id=:budgetId  ", CategoryWiseBudgetSummary.class);
         query.setParameter("userId",userId);
         query.setParameter("month",month);
         query.setParameter("budgetId",budgetId);
         return query.getResultList();
     }
 
+    @Override
+    public List<CategoryWiseBudgetSummary> getBudgetSummaryListWithNoBudgetItem(Integer userId, Integer budgetId, int month) {
+        Query query = entityManager.createQuery("SELECT new com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary(" +
+                " 0 as budget_item_id, 0 as max_spend, 0 as warning_spend, ex.category.id, cc.name as category_name, sum(ex.cost) as total_expense,true ) " +
+                "from Expense ex inner join Category cc on cc.id=ex.category.id " +
+                "where ex.category.id " +
+                "not in ( " +
+                "select category.id from BudgetItem bi " +
+                "where bi.user.id=:userId and bi.budget.id=:budgetId " +
+                ") " +
+                "and extract(month from ex.dateTime)=:month " +
+                "group by ex.category.id,cc.name"+
+                " ", CategoryWiseBudgetSummary.class);
+        query.setParameter("budgetId",budgetId);
+        query.setParameter("userId",userId);
+        query.setParameter("month",month);
 
+        return query.getResultList();
+    }
+
+
+    @Override
+    public List<CategoryWiseBudgetSummary> getBudgetSummaryExpenseListNoCategory(Integer userId, int month) {
+        Query query = entityManager.createQuery("SELECT new com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary(" +
+                " 0 as budget_item_id, 0 as max_spend, 0 as warning_spend, 0 as category_id, 'Uncategorized' as category_name, sum(ex.cost) as total_expense,true ) " +
+                "from Expense ex " +
+                "where ex.category.id is NULL " +
+                "and extract(month from ex.dateTime)=:month and ex.user.id=:userId " +
+                "group by ex.category.id"+
+                " ", CategoryWiseBudgetSummary.class);
+        query.setParameter("userId",userId);
+        query.setParameter("month",month);
+
+        return query.getResultList();
+    }
 
 
 }

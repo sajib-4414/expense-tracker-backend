@@ -8,4 +8,6 @@ import java.util.List;
 public interface BudgetQRepository {
     Budget getBudgetOfMonth( Integer user_id, int month);
     public List<CategoryWiseBudgetSummary> getBudgetSummaryList(Integer userId, int budgetId, int month) ;
+    public List<CategoryWiseBudgetSummary> getBudgetSummaryListWithNoBudgetItem(Integer userId, Integer budgetId,int month) ;
+    public List<CategoryWiseBudgetSummary> getBudgetSummaryExpenseListNoCategory(Integer userId, int month) ;
 }

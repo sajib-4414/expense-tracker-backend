@@ -36,4 +36,11 @@ public class Category {
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "category")
     @JsonIgnore
     private List<Expense> expenseList;
+
+
+    @Transient
+    public Boolean getCustom() {
+        return user!=null;
+    }
+
 }

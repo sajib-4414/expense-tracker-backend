@@ -8,8 +8,11 @@ import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
 import com.sajib_4414.expense.tracker.models.user.User;
 import com.sajib_4414.expense.tracker.models.user.UserRepository;
 import com.sajib_4414.expense.tracker.payload.CategoryCreate;
+import com.sajib_4414.expense.tracker.payload.PagedResponse;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,9 +45,9 @@ public class CategoryService {
     }
 
     //get all categoris that user shuld see = usercategirues+system categories
-    public List<Category> getCategories() {
-        return StreamSupport.stream(categoryRepository.findByUserIsNullOrUser(getCurrentUser()).spliterator(),false)
-                .collect(Collectors.toList());
+    public Page<Category> getCategories() {
+        return categoryRepository.findByUserIsNullOrUser(PageRequest.of(0,5), getCurrentUser());
+
     }
 
     //get only user created categories

@@ -9,6 +9,7 @@ import com.sajib_4414.expense.tracker.payload.BudgetSummaryBoardDTO;
 import com.sajib_4414.expense.tracker.services.BudgetService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class BudgetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Budget>> getMyBudgets() {
+    public ResponseEntity<Page<Budget>> getMyBudgets() {
         // Implementation for retrieving budget details
         return ResponseEntity.ok().body(budgetService.getMyBudgets());
     }

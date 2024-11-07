@@ -8,13 +8,16 @@ import com.sajib_4414.expense.tracker.payload.OverViewDTO;
 import com.sajib_4414.expense.tracker.services.IncomeService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/income")
@@ -24,12 +27,19 @@ public class IncomeController {
     private final IncomeService incomeService;
 
     @GetMapping
-    public ResponseEntity<List<Income>> getMyIncomes(@RequestParam() int month, @RequestParam() int year){
+    public ResponseEntity<Page<Income>> getMyIncomes(@RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year){
 
-        //month defaults to current month if not given
-        //year defaults to current year if not given
-        return ResponseEntity.ok().body(incomeService.getMyIncomes());
+        //check if None of month or year given
+        if(month == null && year==null)
+            return ResponseEntity.ok().body(incomeService.getMyIncomes());
+        //if one is given assume the other
+        else {
+
+            return ResponseEntity.ok().body(incomeService.getMyIncomesOfTime(month,year));
+        }
+
     }
+
 
     @PostMapping("")
     public ResponseEntity<Income> createIncome(@Valid @RequestBody IncomeDTO payload){

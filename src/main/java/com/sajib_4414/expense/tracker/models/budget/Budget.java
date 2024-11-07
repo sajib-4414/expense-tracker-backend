@@ -2,6 +2,7 @@ package com.sajib_4414.expense.tracker.models.budget;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.BadDataException;
 import com.sajib_4414.expense.tracker.models.BaseEntity;
 import com.sajib_4414.expense.tracker.models.user.User;
 import jakarta.persistence.*;
@@ -14,8 +15,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 import java.util.List;
 
+import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
+
 @Entity
-@Table(name = "budgets", indexes = @Index(columnList = "user_id, start_date, end_date"))
+@Table(name = "budgets", indexes = @Index(columnList = "user_id, budget_month_year"))
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -27,15 +30,11 @@ public class Budget extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "start_date")
+    @Temporal(TemporalType.DATE)
+    @Column(name = "budget_month_year")
 
-    private Date startDate;
+    private Date budgetPeriod;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "end_date")
-
-    private Date endDate;
 
     @Column(name = "estimated_income")
 
@@ -51,4 +50,28 @@ public class Budget extends BaseEntity {
 
     @OneToMany(mappedBy = "budget", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<BudgetItem> budgetItemList;
+
+//    @JsonIgnore
+//    private  BudgetRepository budgetRepository;
+//
+//    @PrePersist
+//    public void prePersist() {
+//        // logic before persisting
+//        // check if for this user, for this month, a budget is already defined.
+//        //if yes, reject
+//        boolean ifBudgetExistForMonth = budgetRepository.ifBudgetExistForUserAndMonth(getCurrentUser().getId(),startDate);
+//        if(ifBudgetExistForMonth)
+//            throw new BadDataException("Budget already exists for the month");
+//    }
+
+
+    @PreUpdate
+    public void preUpdate() {
+        // logic before updating
+        //check if the user is owner of this budget
+        //if not reject it
+
+    }
+
+
 }

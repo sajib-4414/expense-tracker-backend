@@ -8,6 +8,7 @@ import com.sajib_4414.expense.tracker.services.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class CategoryController {
 
     //returns system categories plus categories created by user.
     @GetMapping("")
-    protected ResponseEntity<List<Category>> getCategories(){
+    protected ResponseEntity<Page<Category>> getCategories(){
         return ResponseEntity.ok().body(categoryService.getCategories());
     }
 
