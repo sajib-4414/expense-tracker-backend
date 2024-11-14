@@ -12,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Budget extends BaseEntity {
     @Temporal(TemporalType.DATE)
     @Column(name = "budget_month_year")
 
-    private Date budgetPeriod;
+    private LocalDate budgetPeriod;
 
 
     @Column(name = "estimated_income")

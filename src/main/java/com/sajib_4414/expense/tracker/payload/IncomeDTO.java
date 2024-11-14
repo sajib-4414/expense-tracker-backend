@@ -29,7 +29,5 @@ public class IncomeDTO {
     @NotNull(message = "Date is required")
     private Date dateTime;
 
-    @NotNull(message = "incomeSource is required")
-    @Min(value = 1,message = "Please provide a valid incomeSource")
     private int income_source_id;
 }

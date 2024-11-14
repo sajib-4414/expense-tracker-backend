@@ -5,6 +5,7 @@ import com.sajib_4414.expense.tracker.models.budget.Budget;
 import com.sajib_4414.expense.tracker.models.budget.BudgetItem;
 import com.sajib_4414.expense.tracker.payload.BudgetDTO;
 import com.sajib_4414.expense.tracker.payload.BudgetItemDTO;
+import com.sajib_4414.expense.tracker.payload.BudgetListItemDTO;
 import com.sajib_4414.expense.tracker.payload.BudgetSummaryBoardDTO;
 import com.sajib_4414.expense.tracker.services.BudgetService;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -31,7 +33,7 @@ public class BudgetController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Budget>> getMyBudgets() {
+    public ResponseEntity<Page<BudgetListItemDTO>> getMyBudgets() {
         // Implementation for retrieving budget details
         return ResponseEntity.ok().body(budgetService.getMyBudgets());
     }
@@ -86,8 +88,16 @@ public class BudgetController {
 
 
     @GetMapping("/summary")
-    public ResponseEntity<BudgetSummaryBoardDTO> getBudgetBoardSummary() {
-        ;
-        return ResponseEntity.ok().body(budgetService.getMyBudgetSummary());
+    public ResponseEntity<BudgetSummaryBoardDTO> getBudgetBoardSummary(@RequestParam(required = false) Integer budgetMonth, @RequestParam(required = false) Integer budgetYear) {
+        if(budgetMonth == null || budgetYear == null){
+            LocalDate currentDate = LocalDate.now();
+            Integer currentMonth = currentDate.getMonthValue();
+            Integer currentYear = currentDate.getYear();
+            return ResponseEntity.ok().body(budgetService.getMyBudgetSummary(currentMonth, currentYear));
+        }
+        else{
+            return ResponseEntity.ok().body(budgetService.getMyBudgetSummary(budgetMonth, budgetYear));
+        }
+
     }
 }

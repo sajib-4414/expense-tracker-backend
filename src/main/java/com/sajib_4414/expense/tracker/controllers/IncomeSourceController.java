@@ -5,6 +5,7 @@ import com.sajib_4414.expense.tracker.payload.IncomeSourceDTO;
 import com.sajib_4414.expense.tracker.services.IncomeSourceService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class IncomeSourceController {
     private final IncomeSourceService incomeSourceService;
 
     @GetMapping
-    public ResponseEntity<List<IncomeSource>> getIncomeSources(){
+    public ResponseEntity<Page<IncomeSource>> getIncomeSources(){
         return ResponseEntity.ok().body(incomeSourceService.getIncomeSources());
     }
 

@@ -15,7 +15,7 @@ public class ExpenseDTO implements Serializable {
     private Integer cost;
 
 //    @NotNull(message = "category is required")
-    @Min(value = 1, message = "Please provide a valid category")
+
     private Integer category_id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

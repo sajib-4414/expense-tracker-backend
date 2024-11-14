@@ -125,18 +125,26 @@ public class ExpenseRepository {
         modelMapper.map(expenseDTO, dbRetrievedExpense);
 
         //for category, atuomatica mapping is not going to work, as client passes only id
-        Category newCategory = categoryRepository.findById(expenseDTO.getCategory_id()).orElseThrow(()->new ItemNotFoundException("category now found"));
-        dbRetrievedExpense.setCategory(newCategory);
+        if(expenseDTO.getCategory_id() ==null || expenseDTO.getCategory_id()==0){
+            dbRetrievedExpense.setCategory(null);
+        }
+        else{
+            Category newCategory = categoryRepository.findById(expenseDTO.getCategory_id()).orElseThrow(()->new ItemNotFoundException("category now found"));
+            dbRetrievedExpense.setCategory(newCategory);
+        }
+
+
         entityManager.merge(dbRetrievedExpense);
         //automatically updates
         return dbRetrievedExpense;
     }
 
-    public Double getTotalExpenseOfMonth(int month, int user_id){
+    public Double getTotalExpenseOfMonth(int month, int year, int user_id){
         Query query= entityManager.createNativeQuery("SELECT sum(COALESCE(expenses.cost, 0)) " +
                         "FROM expenses where expenses.user_id= :user_id and " +
-                        "EXTRACT(MONTH FROM expenses.date_time) = :month")
+                        "EXTRACT(MONTH FROM expenses.date_time) = :month and EXTRACT(YEAR FROM expenses.date_time) = :year")
                 .setParameter("month",month)
+                .setParameter("year",year)
                 .setParameter("user_id",user_id);
 
         Object result = query.getSingleResult();

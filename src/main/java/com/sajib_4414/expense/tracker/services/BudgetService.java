@@ -8,20 +8,21 @@ import com.sajib_4414.expense.tracker.models.budget.*;
 import com.sajib_4414.expense.tracker.models.category.Category;
 import com.sajib_4414.expense.tracker.models.category.CategoryRepository;
 import com.sajib_4414.expense.tracker.models.expense.ExpenseRepository;
-import com.sajib_4414.expense.tracker.payload.BudgetDTO;
-import com.sajib_4414.expense.tracker.payload.BudgetItemDTO;
-import com.sajib_4414.expense.tracker.payload.BudgetSummaryBoardDTO;
-import com.sajib_4414.expense.tracker.payload.CategoryWiseBudgetSummary;
+import com.sajib_4414.expense.tracker.models.income.IncomeRepository;
+import com.sajib_4414.expense.tracker.payload.*;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
@@ -31,6 +32,7 @@ import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 public class BudgetService {
     private final BudgetRepository budgetRepository;
     private final BudgetQRepository budgetQRepository;
+    private final IncomeRepository incomeRepository;
     private final BudgetItemRepository budgetItemRepository;
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
@@ -42,10 +44,10 @@ public class BudgetService {
 
 
 
-        console.log("start date's month is ",payload.getBudget_period().getMonth() +1);
-        console.log("start date's month is ",payload.getBudget_period().getYear() +1900);
+        console.log("start date's month is ",payload.getBudget_period().getMonthValue());
+        console.log("start date's month is ",payload.getBudget_period().getYear());
         //check if budget exists already
-        boolean ifBudgetExistForMonth = budgetRepository.ifBudgetExistForUserAndMonth(getCurrentUser().getId(), payload.getBudget_period().getMonth()+1, payload.getBudget_period().getYear()+1900);
+        boolean ifBudgetExistForMonth = budgetRepository.ifBudgetExistForUserAndMonth(getCurrentUser().getId(), payload.getBudget_period().getMonthValue(), payload.getBudget_period().getYear());
         if(ifBudgetExistForMonth)
             throw new BadDataException("Budget already exists for the month");
 
@@ -59,8 +61,24 @@ public class BudgetService {
         return newBudget;
     }
 
-    public Page<Budget> getMyBudgets(){
-        return budgetRepository.findByUser(PageRequest.of(0, 5), getCurrentUser());
+    public Page<BudgetListItemDTO> getMyBudgets(){
+        Pageable pageable = PageRequest.of(0,5);
+        Page<Budget> budgetPage = budgetRepository.findByUser( pageable,getCurrentUser());
+        List<BudgetListItemDTO> budgetSummaryList = budgetPage.stream().map(
+                budget -> {
+                    BudgetListItemDTO dto = new BudgetListItemDTO();
+                    dto.setBudget_period(budget.getBudgetPeriod());
+                    dto.setMaximum_expense(budget.getMaxSpend());
+                    var totalIncomeOpt = incomeRepository.getTotalIncomeOfMonthAndYear(getCurrentUser().getId(),budget.getBudgetPeriod().getMonthValue(), budget.getBudgetPeriod().getYear());
+
+                    Double totalIncome = totalIncomeOpt.isPresent()?totalIncomeOpt.get():0;
+                    Double totalExpense = expenseRepository.getTotalExpenseOfMonth(budget.getBudgetPeriod().getMonthValue(), budget.getBudgetPeriod().getYear(), getCurrentUser().getId());
+                    dto.setTotal_expense(totalExpense);
+                    dto.setTotal_income(totalIncome);
+                    return dto;
+                }
+        ).collect(Collectors.toList());
+        return new PageImpl<>(budgetSummaryList, pageable, budgetPage.getTotalElements());
     }
 
     @Transactional
@@ -133,16 +151,15 @@ public class BudgetService {
         return budget;
     }
 
-    public BudgetSummaryBoardDTO getMyBudgetSummary() {
+    public BudgetSummaryBoardDTO getMyBudgetSummary(Integer currentMonth, Integer currentYear) {
         //need the budget of the month
-        LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
+
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonthAndYear(getCurrentUser().getId(),currentMonth, currentYear);
         var summary = BudgetSummaryBoardDTO.builder();
         //check maxspend
         summary.budget(budgetOfMonth);
         //get all expense of this month
-        Double totalSpent = expenseRepository.getTotalExpenseOfMonth(currentMonth, getCurrentUser().getId());
+        Double totalSpent = expenseRepository.getTotalExpenseOfMonth(currentMonth, currentYear, getCurrentUser().getId());
         summary.total_spent(totalSpent);
 
         //this gets all budget items and their associated cost.

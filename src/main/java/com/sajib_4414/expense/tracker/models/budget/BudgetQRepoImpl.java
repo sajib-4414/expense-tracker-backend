@@ -33,12 +33,13 @@ public class BudgetQRepoImpl implements BudgetQRepository{
     private JPAQueryFactory queryFactory;
     private EntityManager entityManager;
     @Override
-    public Budget getBudgetOfMonth(Integer user_id, int month) {
+    public Budget getBudgetOfMonthAndYear(Integer user_id, int month, int year) {
         QBudget budget = QBudget.budget; //it is meant to import the generated q type
         return queryFactory.selectFrom(budget)
                 .where(
                         budget.user.id.eq(user_id)
                        .and(budget.budgetPeriod.month().eq(month))
+                       .and(budget.budgetPeriod.year().eq(year))
                 ).fetchOne();
 
     }

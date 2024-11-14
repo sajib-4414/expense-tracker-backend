@@ -55,8 +55,8 @@ public interface IncomeRepository extends CrudRepository<Income, Integer> {
             "EXTRACT(MONTH from i.dateTime) as income_month )" +//closing bracket of new
             "from Income i " +
             "LEFT join i.incomeSource is " +
-            "where i.user.id=50 " +
-            "and EXTRACT(MONTH from i.dateTime)=10\n" +
+            "where i.user.id=:user_id " +
+            "and EXTRACT(MONTH from i.dateTime)=:month\n" +
             "group by is.id, is.name,income_month")
-    List<IncomeByIncomeSourceDTO> getIncomeByIncomeSource();
+    List<IncomeByIncomeSourceDTO> getIncomeByIncomeSource(@Param("user_id") int user_id,@Param("month") int month);
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -16,7 +17,7 @@ import java.util.Date;
 public class BudgetDTO {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "budget_period  is required")
-    private Date budget_period;
+    private LocalDate budget_period;
 
 
     @NotNull(message = "estimatedIncome date is required")

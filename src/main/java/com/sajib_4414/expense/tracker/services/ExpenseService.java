@@ -122,10 +122,11 @@ public class ExpenseService {
     public ExpenseSummaryDTO getExpenseSummaryView() {
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonthValue();
-        Double expenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth, getCurrentUser().getId());
+        Double expenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth, currentDate.getYear(), getCurrentUser().getId());
         int lastMonth = (currentDate.getMonthValue()-1)==0 ? 12:currentDate.getMonthValue()-1;
-        Double expenseLastMonth = expenseRepository.getTotalExpenseOfMonth(lastMonth, getCurrentUser().getId());
-        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(), currentMonth);
+        Integer lastMonthYear = currentMonth==1 && lastMonth==1? currentDate.getYear()-1: currentDate.getYear();
+        Double expenseLastMonth = expenseRepository.getTotalExpenseOfMonth(lastMonth,lastMonthYear, getCurrentUser().getId());
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonthAndYear(getCurrentUser().getId(), currentMonth, currentDate.getYear());
 
         Integer budgetedCost = budgetOfMonth!=null ? budgetOfMonth.getMaxSpend():0;
         List<CategoryExpense> categoryWiseSpent = expenseRepository.getExpenseListOfMonthByCategory(currentMonth, getCurrentUser().getId());

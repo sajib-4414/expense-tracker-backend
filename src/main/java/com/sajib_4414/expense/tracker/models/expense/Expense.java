@@ -50,4 +50,14 @@ public class Expense {
     @Column(name = "notes", length = 200)
     private String notes;
 
+    @Override
+    public String toString() {
+        return "Expense{" +
+                "id=" + id +
+                ", cost=" + cost +
+                ", dateTime=" + dateTime +
+                ", notes='" + notes + '\'' +
+                '}';
+    }
+
 }

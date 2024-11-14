@@ -3,6 +3,7 @@ package com.sajib_4414.expense.tracker.models.category;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sajib_4414.expense.tracker.models.budget.BudgetItem;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.models.user.User;
 import jakarta.persistence.*;
@@ -33,10 +34,13 @@ public class Category {
     @Column(name = "name",nullable = false, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "category")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "category")
     @JsonIgnore
     private List<Expense> expenseList;
 
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "category")
+    @JsonIgnore
+    private List<BudgetItem> allBudgetItemsWithThisCategory;
 
     @Transient
     public Boolean getCustom() {

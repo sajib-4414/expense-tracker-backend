@@ -108,7 +108,7 @@ public class IncomeService {
         int currentMonth = currentDate.getMonthValue();
         Double totalIncomeThisMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),currentMonth).orElse(0.0);
         //get the total expense reported this month
-        Double totalExpenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth,getCurrentUser().getId());
+        Double totalExpenseThisMonth = expenseRepository.getTotalExpenseOfMonth(currentMonth, currentDate.getYear(), getCurrentUser().getId());
         Double netBalance = totalIncomeThisMonth - totalExpenseThisMonth;
 
         List<CategoryExpense> top5 = expenseRepository.getTop5CategoryExpenseOfMonth(currentMonth, getCurrentUser().getId());
@@ -131,13 +131,13 @@ public class IncomeService {
         //get total income last month
         Double incomeLastMonth = incomeRepository.getTotalIncomeOfMonth(getCurrentUser().getId(),lastMonth).orElse(0.0);
         //get estimated income from the budget's of this month, eventually we will allow one budget only per month
-        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonth(getCurrentUser().getId(),currentMonth);
+        Budget budgetOfMonth = budgetQRepository.getBudgetOfMonthAndYear(getCurrentUser().getId(),currentMonth, currentDate.getYear());
         Integer budgetedIncome = -1;
         if(budgetOfMonth !=null)
             budgetedIncome  = budgetOfMonth.getEstimatedIncome();
 
         //get incomes total by income source
-        List<IncomeByIncomeSourceDTO> income_by_source = incomeRepository.getIncomeByIncomeSource();
+        List<IncomeByIncomeSourceDTO> income_by_source = incomeRepository.getIncomeByIncomeSource(getCurrentUser().getId(),currentMonth);
         return IncomeSummaryDTO
                 .builder()
                 .incomeListBySource(income_by_source)

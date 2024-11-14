@@ -2,6 +2,7 @@ package com.sajib_4414.expense.tracker.services;
 
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.ItemNotFoundException;
 import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.PermissionError;
+import com.sajib_4414.expense.tracker.models.income.Income;
 import com.sajib_4414.expense.tracker.models.income.IncomeSource;
 import com.sajib_4414.expense.tracker.models.income.IncomeSourceRepository;
 import com.sajib_4414.expense.tracker.models.user.User;
@@ -9,6 +10,8 @@ import com.sajib_4414.expense.tracker.payload.IncomeSourceDTO;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -24,8 +27,10 @@ import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
 public class IncomeSourceService {
     private IncomeSourceRepository incomeSourceRepository;
 
-    public List<IncomeSource> getIncomeSources(){
-        return incomeSourceRepository.findByUserIsNullOrUser(getCurrentUser());
+    public Page<IncomeSource> getIncomeSources(){
+        //get own created income sources and system created (where user id null)
+        Page<IncomeSource> incomeSourceList = incomeSourceRepository.findByUserIsNullOrUser(PageRequest.of(0, 5), getCurrentUser());
+        return incomeSourceList;
     }
 
     @Transactional
