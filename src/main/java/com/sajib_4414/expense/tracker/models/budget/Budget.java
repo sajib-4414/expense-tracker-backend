@@ -1,22 +1,20 @@
 package com.sajib_4414.expense.tracker.models.budget;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sajib_4414.expense.tracker.config.exceptions.customexceptions.BadDataException;
+
 import com.sajib_4414.expense.tracker.models.BaseEntity;
 import com.sajib_4414.expense.tracker.models.user.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
+
 
 import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 
-import static com.sajib_4414.expense.tracker.config.Helper.getCurrentUser;
+
 
 @Entity
 @Table(name = "budgets", indexes = @Index(columnList = "user_id, budget_month_year"))
@@ -66,13 +64,13 @@ public class Budget extends BaseEntity {
 //    }
 
 
-    @PreUpdate
-    public void preUpdate() {
-        // logic before updating
-        //check if the user is owner of this budget
-        //if not reject it
-
-    }
+//    @PreUpdate
+//    public void preUpdate() {
+//        // logic before updating
+//        //check if the user is owner of this budget
+//        //if not reject it
+//
+//    }
 
 
 }

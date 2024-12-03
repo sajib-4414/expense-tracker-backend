@@ -47,6 +47,7 @@ public class GlobalSecurityConfiguration {
 
                         .requestMatchers("/api/v1/expenses/**").hasAnyAuthority(Roles.USER, Roles.ADMIN)
                          .requestMatchers("/api/v1/auth/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                          .requestMatchers("/error").permitAll()
 //                         //the below two line means, anything else needs to be authenticated
 //                        //for now we dont need these kind of config, as we are already more explicit like we need authentication
