@@ -1,5 +1,6 @@
 package com.sajib_4414.expense.tracker.controllers;
 
+import com.sajib_4414.expense.tracker.config.Helper;
 import com.sajib_4414.expense.tracker.models.expense.Expense;
 import com.sajib_4414.expense.tracker.payload.CategoryExpense;
 import com.sajib_4414.expense.tracker.payload.ExpenseDTO;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.slf4j.MDC;
 
 import java.net.URI;
 import java.util.List;
@@ -31,13 +33,25 @@ public class ExpenseController {
 
     @PostMapping("")
     public ResponseEntity<Expense> createExpense(@Valid @RequestBody ExpenseDTO payload){
-        Expense createdExpense = expenseService.createExpense(payload);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdExpense.getId())
-                .toUri();
 
-        return ResponseEntity.created(location).body(createdExpense);
+        try {
+            MDC.put("userId", String.valueOf(Helper.getCurrentUser().getUsername()));
+            MDC.put("amount", String.valueOf(payload.getCost()));
+
+            Expense createdExpense = expenseService.createExpense(payload);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{id}")
+                    .buildAndExpand(createdExpense.getId())
+                    .toUri();
+            return ResponseEntity.created(location).body(createdExpense);
+            // your code or service call
+        } finally {
+            MDC.clear();
+        }
+
+
+
+
     }
 
     @PutMapping("/updatecost/{expenseId}")

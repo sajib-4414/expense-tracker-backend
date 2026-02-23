@@ -11,7 +11,9 @@ import lombok.NoArgsConstructor;
 import java.util.Date;
 
 @Entity
-@Table(name = "incomes", indexes = @Index(columnList = "user_id"))
+@Table(name = "incomes"
+//        , indexes = @Index(columnList = "user_id")
+)
 @Data
 @Builder
 @AllArgsConstructor

@@ -44,6 +44,11 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 //	runtimeOnly group: 'org.flywaydb', name: 'flyway-database-postgresql', version: '10.10.0'
 
+	//logback implementation for logging, Logback DB appender support
+	implementation 'ch.qos.logback:logback-classic'
+	implementation 'ch.qos.logback:logback-core'
+
+
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
