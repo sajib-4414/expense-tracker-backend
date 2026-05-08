@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 @RequestMapping("/api/v1/income")
@@ -25,13 +26,24 @@ import java.util.Optional;
 public class IncomeController {
 
     private final IncomeService incomeService;
+    private final Random random = new Random();
 
     @GetMapping
-    public ResponseEntity<Page<Income>> getMyIncomes(@RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year){
+    public ResponseEntity<Page<Income>> getMyIncomes(@RequestParam(value = "month", required = false) Integer month, @RequestParam(value = "year", required = false) Integer year) throws InterruptedException {
 
         //check if None of month or year given
-        if(month == null && year==null)
-            return ResponseEntity.ok().body(incomeService.getMyIncomes());
+        if(month == null && year==null) {
+
+            // 1% slow requests
+           // if (random.nextInt(10) == 0) {
+                throw new NullPointerException();
+               // Thread.sleep(2000); // 2 seconds
+          //  } else {
+            //    Thread.sleep(20); // normal fast request
+           // }
+
+          //  return ResponseEntity.ok().body(incomeService.getMyIncomes());
+        }
         //if one is given assume the other
         else {
 
