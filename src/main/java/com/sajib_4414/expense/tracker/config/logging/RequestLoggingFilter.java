@@ -34,11 +34,9 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         String traceId = UUID.randomUUID().toString().replace("-", "").substring(0, 16);
         long startTime = System.currentTimeMillis();
 
-        // Wrap request so body can be read multiple times
         ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
 
-        // Put values in MDC so every log line in this request gets them
         MDC.put("traceId", traceId);
         MDC.put("method", request.getMethod());
         MDC.put("path", request.getRequestURI());
@@ -47,24 +45,38 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             filterChain.doFilter(wrappedRequest, wrappedResponse);
         } finally {
             long duration = System.currentTimeMillis() - startTime;
-            String requestBody = getBody(wrappedRequest.getContentAsByteArray(), wrappedRequest.getCharacterEncoding());
             int status = wrappedResponse.getStatus();
 
+            // Spring has already read the body by now - safe to get from cache
+            byte[] bodyBytes = wrappedRequest.getContentAsByteArray();
+            String requestBody = "";
+            if (bodyBytes.length > 0) {
+                try {
+                    requestBody = new String(bodyBytes,
+                            request.getCharacterEncoding() != null
+                                    ? request.getCharacterEncoding()
+                                    : "UTF-8");
+                } catch (Exception e) {
+                    requestBody = "[could not read body]";
+                }
+            }
+
             if (status >= 400) {
-                log.warn("REQUEST path={} method={} status={} duration={}ms traceId={} payload={}",
+                log.warn("RESPONSE traceId={} path={} method={} status={} duration={}ms payload={}",
+                        traceId,
                         request.getRequestURI(),
                         request.getMethod(),
                         status,
                         duration,
-                        traceId,
                         sanitize(requestBody));
             } else {
-                log.info("REQUEST path={} method={} status={} duration={}ms traceId={}",
+                log.info("RESPONSE traceId={} path={} method={} status={} duration={}ms payload={}",
+                        traceId,
                         request.getRequestURI(),
                         request.getMethod(),
                         status,
                         duration,
-                        traceId);
+                        sanitize(requestBody));
             }
 
             wrappedResponse.copyBodyToResponse();
@@ -72,16 +84,6 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
         }
     }
 
-    private String getBody(byte[] content, String encoding) {
-        if (content.length == 0) return "";
-        try {
-            return new String(content, encoding != null ? encoding : "UTF-8");
-        } catch (Exception e) {
-            return "[unreadable]";
-        }
-    }
-
-    // Strip sensitive fields before logging
     private String sanitize(String body) {
         if (body == null || body.isBlank()) return "";
         return body.replaceAll("\"password\"\\s*:\\s*\"[^\"]*\"", "\"password\":\"***\"")
