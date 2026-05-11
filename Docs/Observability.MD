@@ -1,3 +1,6 @@
+Log and Trace, useful article:
+https://medium.com/@AlexanderObregon/adding-request-logging-to-spring-boot-apis-3cdf1ee860c3
+
 The level hierarchy from lowest to highest:
 TRACE → DEBUG → INFO → WARN → ERROR
 When you set a level, you see that level and everything above it.
