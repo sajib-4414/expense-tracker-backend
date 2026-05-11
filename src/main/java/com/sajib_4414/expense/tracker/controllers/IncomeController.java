@@ -36,13 +36,13 @@ public class IncomeController {
 
             // 1% slow requests
            // if (random.nextInt(10) == 0) {
-                throw new NullPointerException();
+              //  throw new NullPointerException();
                // Thread.sleep(2000); // 2 seconds
           //  } else {
             //    Thread.sleep(20); // normal fast request
            // }
 
-          //  return ResponseEntity.ok().body(incomeService.getMyIncomes());
+            return ResponseEntity.ok().body(incomeService.getMyIncomes());
         }
         //if one is given assume the other
         else {
