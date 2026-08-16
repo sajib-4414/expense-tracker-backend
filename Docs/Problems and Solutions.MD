@@ -243,3 +243,14 @@ public class CategoryExpense {
 * rabbitmq using/ spring boot own mq
 * spring cloud
 * JTA
+
+## Have GC Pause on the actuator
+```java
+@Configuration
+public class MetricsConfig {
+    @Bean
+    public JvmGcMetrics jvmGcMetrics() {
+        return new JvmGcMetrics();
+    }
+}:
+```
