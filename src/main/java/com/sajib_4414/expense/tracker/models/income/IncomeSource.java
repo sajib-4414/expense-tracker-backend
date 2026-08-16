@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "income_sources", indexes = @Index(name = "created_by_index",columnList = "user"))
+@Table(name = "income_sources", indexes = @Index(name = "created_by_index",columnList = "user_id"))
 public class IncomeSource {
     @Id
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)

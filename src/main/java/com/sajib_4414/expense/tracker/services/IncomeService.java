@@ -38,7 +38,9 @@ public class IncomeService {
     private BudgetQRepository budgetQRepository;
     private BudgetRepository budgetRepository;
 
-    public Page<Income> getMyIncomes() {
+    @Transactional
+    public Page<Income> getMyIncomes() throws InterruptedException {
+        Thread.sleep(10000); // 2 seconds
         Page<Income> incomes = incomeRepository.findByUser(PageRequest.of(0, 5), getCurrentUser());
         return incomes;
     }
