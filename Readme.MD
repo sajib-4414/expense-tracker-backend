@@ -58,6 +58,12 @@ npm start
 - Register a new account or log in with existing credentials.
 - Start tracking your incomes and expenses, create budgets, and view detailed reports
 
+### Observability
+promethus: in your local pc, goto prometheus folder and doubleclick prometheus exe. then access in localhost:9090
+grafana: once installed, it usually keeps running, access in localhost:3000
+actuator:http://localhost:8080/actuator/
+
+
 ### Contributing
 Contributions are welcome! Please fork the repository and create a pull request with your changes.
 
