@@ -44,6 +44,10 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 //	runtimeOnly group: 'org.flywaydb', name: 'flyway-database-postgresql', version: '10.10.0'
 
+	//logback implementation for logging, Logback DB appender support
+	implementation 'ch.qos.logback:logback-classic'
+	implementation 'ch.qos.logback:logback-core'
+
 	//prometheus
 	runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
 
