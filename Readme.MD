@@ -3,7 +3,7 @@
 ## Overview
 This project is a custom budget tracker built to meet specific requirements for personal finance management. After exploring various budget tracking applications and finding most of them to be paid solutions, I decided to build my own full-stack application.
 
-Observability: it also has file based login, prometheus, grafana, actuators. Also has JVM GC logging
+Observability: it also has **file based logging(Logback), prometheus, grafana, actuators. Also has JVM GC logging**
 
 ## Technologies Used
 - **Backend**: Spring Boot, OAuth2, Flyaway Migration Tracker
